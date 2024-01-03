@@ -1,26 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLineupInput } from './dto/create-lineup.input';
 import { UpdateLineupInput } from './dto/update-lineup.input';
+import { Lineup } from './entities/lineup.entity';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class LineupsService {
-  create(createLineupInput: CreateLineupInput) {
-    return 'This action adds a new lineup';
+
+  constructor(private prisma: PrismaService) {}
+
+  create(data: CreateLineupInput): Promise<Lineup> {
+    const newLineup = this.prisma.lineup.create({
+      data: data
+    })
+
+    return newLineup
   }
 
-  findAll() {
-    return `This action returns all lineups`;
+  findAll(): Promise<Lineup[]> {
+    return this.prisma.lineup.findMany()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} lineup`;
+  findOne(id: string): Promise<Lineup> {
+    return this.prisma.lineup.findUnique({
+      where: {
+        id: id
+      }
+    })
   }
 
-  update(id: number, updateLineupInput: UpdateLineupInput) {
-    return `This action updates a #${id} lineup`;
+  getUserLineups(userId: string): Promise<Lineup[]> {
+    return this.prisma.lineup.findMany({
+      where: {
+        owner: userId
+      }
+    })
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} lineup`;
-  }
 }

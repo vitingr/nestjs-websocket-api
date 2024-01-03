@@ -17,47 +17,47 @@ export class CreateLineupInput {
   @IsAlpha()
   owner: string;
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player1: string;
+  player1: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player2: string;
+  player2: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player3: string;
+  player3: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player4: string;
+  player4: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player5: string;
+  player5: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player6: string;
+  player6: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player7: string;
+  player7: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player8: string;
+  player8: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player9: string;
+  player9: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player10: string;
+  player10: string[];
 
-  @Field({ nullable: true })
+  @Field((type) => [String], { nullable: true })
   @IsAlpha()
-  player11: string;
+  player11: string[];
 }

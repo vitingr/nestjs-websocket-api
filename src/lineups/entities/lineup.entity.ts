@@ -17,36 +17,36 @@ export class Lineup {
   @Field()
   owner: string;
 
-  @Field({nullable: true})
-  player1: string;
+  @Field((type) => [String], {nullable: true})
+  player1: string[];
 
-  @Field({nullable: true})
-  player2: string;
+  @Field((type) => [String], {nullable: true})
+  player2: string[];
 
-  @Field({nullable: true})
-  player3: string;
+  @Field((type) => [String], {nullable: true})
+  player3: string[];
 
-  @Field({nullable: true})
-  player4: string;
+  @Field((type) => [String], {nullable: true})
+  player4: string[];
 
-  @Field({nullable: true})
-  player5: string;
+  @Field((type) => [String], {nullable: true})
+  player5: string[];
 
-  @Field({nullable: true})
-  player6: string;
+  @Field((type) => [String], {nullable: true})
+  player6: string[];
 
-  @Field({nullable: true})
-  player7: string;
+  @Field((type) => [String], {nullable: true})
+  player7: string[];
 
-  @Field({nullable: true})
-  player8: string;
+  @Field((type) => [String], {nullable: true})
+  player8: string[];
 
-  @Field({nullable: true})
-  player9: string;
+  @Field((type) => [String], {nullable: true})
+  player9: string[];
 
-  @Field({nullable: true})
-  player10: string;
+  @Field((type) => [String], {nullable: true})
+  player10: string[];
 
-  @Field({nullable: true})
-  player11: string;
+  @Field((type) => [String], {nullable: true})
+  player11: string[];
 }

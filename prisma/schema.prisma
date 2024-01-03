@@ -45,16 +45,16 @@ model PlayerCard {
   name                String
   club                String
   league              String
-  overall             Int                   @default(0)
+  overall             Int                   
   type                String
-  pace                Int                   @default(0)
-  finalization        Int                   @default(0)
-  pass                Int                   @default(0)
-  drible              Int                   @default(0)
-  defense             Int                   @default(0)
-  physic              Int                   @default(0)
-  maxValue            Float                 @default(150)
-  minValue            Float                 @default(1000)
+  pace                Int                   
+  finalization        Int                   
+  pass                Int                   
+  drible              Int                   
+  defense             Int                   
+  physic              Int                   
+  maxValue            Float                 @default(10000)
+  minValue            Float                 @default(150)
   quickSellValue      Float                 @default(150)
   PlayerCardGenerated PlayerCardGenerated[]
 }
@@ -70,15 +70,15 @@ model PlayerCardGenerated {
   name           String
   club           String
   league         String
-  overall        Int      @default(0)
+  overall        Int
   type           String
-  pace           Int      @default(0)
-  finalization   Int      @default(0)
-  pass           Int      @default(0)
-  drible         Int      @default(0)
-  defense        Int      @default(0)
-  physic         Int      @default(0)
-  maxValue       Float    @default(0)
+  pace           Int
+  finalization   Int
+  pass           Int
+  drible         Int
+  defense        Int
+  physic         Int
+  maxValue       Float
   minValue       Float    @default(0)
 
   // Relations
@@ -87,22 +87,22 @@ model PlayerCardGenerated {
 }
 
 model Lineup {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   name         String
   overall      Float?   @default(0)
   totalOverall Float?   @default(0)
-  owner        String  @db.ObjectId
-  player1      String[] 
-  player2      String[] 
-  player3      String[] 
-  player4      String[] 
-  player5      String[] 
-  player6      String[] 
-  player7      String[] 
-  player8      String[] 
-  player9      String[] 
-  player10     String[] 
-  player11     String[] 
+  owner        String   @db.ObjectId
+  player1      String[]
+  player2      String[]
+  player3      String[]
+  player4      String[]
+  player5      String[]
+  player6      String[]
+  player7      String[]
+  player8      String[]
+  player9      String[]
+  player10     String[]
+  player11     String[]
 
   // Relations
   ownerId User @relation(fields: [owner], references: [id])

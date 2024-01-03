@@ -57,17 +57,17 @@ type Lineup {
   overall: Float
   totalOverall: Float
   owner: String!
-  player1: String
-  player2: String
-  player3: String
-  player4: String
-  player5: String
-  player6: String
-  player7: String
-  player8: String
-  player9: String
-  player10: String
-  player11: String
+  player1: [String!]
+  player2: [String!]
+  player3: [String!]
+  player4: [String!]
+  player5: [String!]
+  player6: [String!]
+  player7: [String!]
+  player8: [String!]
+  player9: [String!]
+  player10: [String!]
+  player11: [String!]
 }
 
 type Query {
@@ -75,10 +75,9 @@ type Query {
   getAllUsers: [User!]!
   getUserFriends(friends: [String!]!): [User!]!
   getUserPendingFriends(playersId: [String!]!): [User!]!
-  findAll: [Card!]!
-  findOne(id: String!): Card!
-  lineups: [Lineup!]!
-  lineup(id: Int!): Lineup!
+  findAll: [Lineup!]!
+  findOne(id: String!): Lineup!
+  getUserLineups(id: String!): [Lineup!]!
 }
 
 type Mutation {
@@ -86,8 +85,6 @@ type Mutation {
   changeClubName(changeClubName: ChangeClubName!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
-  updateLineup(updateLineupInput: UpdateLineupInput!): Lineup!
-  removeLineup(id: Int!): Lineup!
 }
 
 input CreateUser {
@@ -128,34 +125,15 @@ input CreateLineupInput {
   overall: Float
   totalOverall: Float
   owner: String!
-  player1: String
-  player2: String
-  player3: String
-  player4: String
-  player5: String
-  player6: String
-  player7: String
-  player8: String
-  player9: String
-  player10: String
-  player11: String
-}
-
-input UpdateLineupInput {
-  name: String
-  overall: Float
-  totalOverall: Float
-  owner: String
-  player1: String
-  player2: String
-  player3: String
-  player4: String
-  player5: String
-  player6: String
-  player7: String
-  player8: String
-  player9: String
-  player10: String
-  player11: String
-  id: Int!
+  player1: [String!]
+  player2: [String!]
+  player3: [String!]
+  player4: [String!]
+  player5: [String!]
+  player6: [String!]
+  player7: [String!]
+  player8: [String!]
+  player9: [String!]
+  player10: [String!]
+  player11: [String!]
 }
