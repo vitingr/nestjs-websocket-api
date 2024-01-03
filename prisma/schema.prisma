@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                  String                @id @default(auto()) @map("_id") @db.ObjectId
+  uuid                String                @unique
+  name                String
+  firstname           String
+  lastname            String
+  clubname            String                @unique
+  email               String                @unique
+  password            String?
+  currency            Float                 @default(500)
+  cards               String[]
+  qtdCards            Int?                  @default(0)
+  badges              String[]
+  badge               String?               @default("")
+  friends             String[]
+  qtdFriends          Int?                  @default(0)
+  pendingFriends      String[]
+  driverMenu          Boolean               @default(false)
+  driverHome          Boolean               @default(false)
+  driverLineup        Boolean               @default(false)
+  driverProfile       Boolean               @default(false)
+  newUser             Boolean               @default(true)
+  lineups             String[]
+  futpoints           Int                   @default(0)
+  points              Int                   @default(0)
+  victories           Int?                  @default(0)
+  draws               Int?                  @default(0)
+  loses               Int?                  @default(0)
+  PlayerCardGenerated PlayerCardGenerated[]
+  Lineup              Lineup[]
+}
+
+model PlayerCard {
+  id                  String                @id @default(auto()) @map("_id") @db.ObjectId
+  cardImage           String                @default("")
+  name                String
+  club                String
+  league              String
+  overall             Int                   @default(0)
+  type                String
+  pace                Int                   @default(0)
+  finalization        Int                   @default(0)
+  pass                Int                   @default(0)
+  drible              Int                   @default(0)
+  defense             Int                   @default(0)
+  physic              Int                   @default(0)
+  maxValue            Float                 @default(150)
+  minValue            Float                 @default(1000)
+  quickSellValue      Float                 @default(150)
+  PlayerCardGenerated PlayerCardGenerated[]
+}
+
+model PlayerCardGenerated {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  owner          String   @db.ObjectId
+  selling        Boolean  @default(false)
+  sellingDate    DateTime @default(now())
+  price          Float    @default(150)
+  quickSellValue Float    @default(150)
+  playerId       String   @db.ObjectId
+  name           String
+  club           String
+  league         String
+  overall        Int      @default(0)
+  type           String
+  pace           Int      @default(0)
+  finalization   Int      @default(0)
+  pass           Int      @default(0)
+  drible         Int      @default(0)
+  defense        Int      @default(0)
+  physic         Int      @default(0)
+  maxValue       Float    @default(0)
+  minValue       Float    @default(0)
+
+  // Relations
+  userId User       @relation(fields: [owner], references: [id])
+  cardId PlayerCard @relation(fields: [playerId], references: [id])
+}
+
+model Lineup {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  overall      Float?   @default(0)
+  totalOverall Float?   @default(0)
+  owner        String  @db.ObjectId
+  player1      String[] 
+  player2      String[] 
+  player3      String[] 
+  player4      String[] 
+  player5      String[] 
+  player6      String[] 
+  player7      String[] 
+  player8      String[] 
+  player9      String[] 
+  player10     String[] 
+  player11     String[] 
+
+  // Relations
+  ownerId User @relation(fields: [owner], references: [id])
+}

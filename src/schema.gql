@@ -1,0 +1,161 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: String!
+  uuid: String!
+  name: String!
+  firstname: String!
+  lastname: String!
+  clubname: String!
+  email: String!
+  password: String
+  currency: Float!
+  cards: [String!]!
+  qtdCards: Int
+  badges: [String!]!
+  badge: String
+  friends: [String!]!
+  qtdFriends: Int
+  pendingFriends: [String!]
+  lineups: [String!]
+  driverMenu: Boolean!
+  driverHome: Boolean!
+  driverLineup: Boolean!
+  driverProfile: Boolean!
+  newUser: Boolean!
+  futpoints: Int
+  points: Int
+  victories: Int
+  draws: Int
+  loses: Int
+}
+
+type Card {
+  id: String!
+  cardImage: String!
+  name: String!
+  club: String!
+  league: String!
+  type: String!
+  overall: Int!
+  pace: Int!
+  finalization: Int!
+  pass: Int!
+  drible: Int!
+  defense: Int!
+  physic: Int!
+  minValue: Float!
+  maxValue: Float!
+  quickSellValue: Float!
+}
+
+type Lineup {
+  id: String!
+  name: String!
+  overall: Float
+  totalOverall: Float
+  owner: String!
+  player1: String
+  player2: String
+  player3: String
+  player4: String
+  player5: String
+  player6: String
+  player7: String
+  player8: String
+  player9: String
+  player10: String
+  player11: String
+}
+
+type Query {
+  getUser(uuid: String!): User!
+  getAllUsers: [User!]!
+  getUserFriends(friends: [String!]!): [User!]!
+  getUserPendingFriends(playersId: [String!]!): [User!]!
+  findAll: [Card!]!
+  findOne(id: String!): Card!
+  lineups: [Lineup!]!
+  lineup(id: Int!): Lineup!
+}
+
+type Mutation {
+  createNewUser(createUser: CreateUser!): User!
+  changeClubName(changeClubName: ChangeClubName!): User!
+  createCard(createCardInput: CreateCardInput!): Card!
+  createLineup(createLineupInput: CreateLineupInput!): Lineup!
+  updateLineup(updateLineupInput: UpdateLineupInput!): Lineup!
+  removeLineup(id: Int!): Lineup!
+}
+
+input CreateUser {
+  uuid: String!
+  name: String!
+  firstname: String!
+  lastname: String!
+  clubname: String!
+  email: String!
+  password: String
+}
+
+input ChangeClubName {
+  userId: String!
+  clubname: String!
+}
+
+input CreateCardInput {
+  cardImage: String!
+  name: String!
+  club: String!
+  league: String!
+  type: String!
+  overall: Int!
+  pace: Int!
+  finalization: Int!
+  pass: Int!
+  drible: Int!
+  defense: Int!
+  physic: Int!
+  minValue: Float!
+  maxValue: Float!
+  quickSellValue: Float!
+}
+
+input CreateLineupInput {
+  name: String!
+  overall: Float
+  totalOverall: Float
+  owner: String!
+  player1: String
+  player2: String
+  player3: String
+  player4: String
+  player5: String
+  player6: String
+  player7: String
+  player8: String
+  player9: String
+  player10: String
+  player11: String
+}
+
+input UpdateLineupInput {
+  name: String
+  overall: Float
+  totalOverall: Float
+  owner: String
+  player1: String
+  player2: String
+  player3: String
+  player4: String
+  player5: String
+  player6: String
+  player7: String
+  player8: String
+  player9: String
+  player10: String
+  player11: String
+  id: Int!
+}
