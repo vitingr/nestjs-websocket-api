@@ -37,6 +37,7 @@ model User {
   loses               Int?                  @default(0)
   PlayerCardGenerated PlayerCardGenerated[]
   Lineup              Lineup[]
+  BadgeCreated        BadgeCreated[]
 }
 
 model PlayerCard {
@@ -45,14 +46,14 @@ model PlayerCard {
   name                String
   club                String
   league              String
-  overall             Int                   
+  overall             Int
   type                String
-  pace                Int                   
-  finalization        Int                   
-  pass                Int                   
-  drible              Int                   
-  defense             Int                   
-  physic              Int                   
+  pace                Int
+  finalization        Int
+  pass                Int
+  drible              Int
+  defense             Int
+  physic              Int
   maxValue            Float                 @default(10000)
   minValue            Float                 @default(150)
   quickSellValue      Float                 @default(150)
@@ -61,11 +62,11 @@ model PlayerCard {
 
 model PlayerCardGenerated {
   id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  cardImage      String   @default("")
   owner          String   @db.ObjectId
   selling        Boolean  @default(false)
-  sellingDate    DateTime @default(now())
-  price          Float    @default(150)
-  quickSellValue Float    @default(150)
+  created        DateTime @default(now())
+  price          Float?
   playerId       String   @db.ObjectId
   name           String
   club           String
@@ -78,8 +79,9 @@ model PlayerCardGenerated {
   drible         Int
   defense        Int
   physic         Int
-  maxValue       Float
-  minValue       Float    @default(0)
+  maxValue       Float    @default(10000)
+  minValue       Float    @default(150)
+  quickSellValue Float    @default(150)
 
   // Relations
   userId User       @relation(fields: [owner], references: [id])
@@ -106,4 +108,31 @@ model Lineup {
 
   // Relations
   ownerId User @relation(fields: [owner], references: [id])
+}
+
+model Badge {
+  id             String         @id @default(auto()) @map("_id") @db.ObjectId
+  badgeImage     String
+  clubname       String
+  type           String
+  maxValue       Float          @default(5000)
+  minValue       Float          @default(150)
+  quickSellValue Float          @default(150)
+  BadgeCreated   BadgeCreated[]
+}
+
+model BadgeCreated {
+  id             String @id @default(auto()) @map("_id") @db.ObjectId
+  badgeId        String @db.ObjectId
+  ownerId        String @db.ObjectId
+  badgeImage     String
+  clubname       String
+  type           String
+  maxValue       Float  @default(5000)
+  minValue       Float  @default(150)
+  quickSellValue Float  @default(150)
+
+  // Relations
+  badge Badge @relation(fields: [badgeId], references: [id])
+  owner User  @relation(fields: [ownerId], references: [id])
 }

@@ -70,14 +70,39 @@ type Lineup {
   player11: [String!]
 }
 
+type GeneratedCard {
+  id: String!
+  cardImage: String!
+  owner: String!
+  selling: Boolean!
+  price: Float
+  playerId: String!
+  name: String!
+  club: String!
+  league: String!
+  type: String!
+  overall: Int!
+  pace: Int!
+  finalization: Int!
+  pass: Int!
+  drible: Int!
+  defense: Int!
+  physic: Int!
+  minValue: Float!
+  maxValue: Float!
+  quickSellValue: Float!
+}
+
 type Query {
   getUser(uuid: String!): User!
   getAllUsers: [User!]!
   getUserFriends(friends: [String!]!): [User!]!
   getUserPendingFriends(playersId: [String!]!): [User!]!
-  findAll: [Lineup!]!
-  findOne(id: String!): Lineup!
+  findAll: [GeneratedCard!]!
+  findOne(id: String!): GeneratedCard!
   getUserLineups(id: String!): [Lineup!]!
+  findUserCards(id: String!): [GeneratedCard!]!
+  findSellingCards: [GeneratedCard!]!
 }
 
 type Mutation {
@@ -85,6 +110,10 @@ type Mutation {
   changeClubName(changeClubName: ChangeClubName!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
+  createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
+  sellCard(sellCard: SellCard!): GeneratedCard!
+  buyCard(sellCard: SellCard!): GeneratedCard!
+  openPlayersPack(id: String!): [GeneratedCard!]!
 }
 
 input CreateUser {
@@ -136,4 +165,33 @@ input CreateLineupInput {
   player9: [String!]
   player10: [String!]
   player11: [String!]
+}
+
+input CreateGeneratedCardInput {
+  cardImage: String!
+  owner: String!
+  selling: Boolean!
+  price: Float
+  playerId: String!
+  name: String!
+  club: String!
+  league: String!
+  type: String!
+  overall: Int!
+  pace: Int!
+  finalization: Int!
+  pass: Int!
+  drible: Int!
+  defense: Int!
+  physic: Int!
+  minValue: Float!
+  maxValue: Float!
+  quickSellValue: Float!
+}
+
+input SellCard {
+  ownerId: String!
+  newOwnerId: String!
+  playerId: String!
+  price: Float!
 }

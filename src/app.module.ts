@@ -10,6 +10,7 @@ import { CardsModule } from './cards/cards.module';
 import { GatewayModule } from './gateway/gateway.module';
 import { SocketModule } from './socket/socket.module';
 import { LineupsModule } from './lineups/lineups.module';
+import { GeneratedCardsModule } from './generated-cards/generated-cards.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { LineupsModule } from './lineups/lineups.module';
     CardsModule,
     GatewayModule,
     SocketModule,
-    LineupsModule
+    LineupsModule,
+    GeneratedCardsModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
