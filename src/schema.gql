@@ -39,6 +39,7 @@ type Card {
   club: String!
   league: String!
   type: String!
+  position: String!
   overall: Int!
   pace: Int!
   finalization: Int!
@@ -57,17 +58,17 @@ type Lineup {
   overall: Float
   totalOverall: Float
   owner: String!
-  player1: [String!]
-  player2: [String!]
-  player3: [String!]
-  player4: [String!]
-  player5: [String!]
-  player6: [String!]
-  player7: [String!]
-  player8: [String!]
-  player9: [String!]
-  player10: [String!]
-  player11: [String!]
+  player1: String
+  player2: String
+  player3: String
+  player4: String
+  player5: String
+  player6: String
+  player7: String
+  player8: String
+  player9: String
+  player10: String
+  player11: String
 }
 
 type GeneratedCard {
@@ -75,12 +76,14 @@ type GeneratedCard {
   cardImage: String!
   owner: String!
   selling: Boolean!
+  created: DateTime!
   price: Float
   playerId: String!
   name: String!
   club: String!
   league: String!
   type: String!
+  position: String!
   overall: Int!
   pace: Int!
   finalization: Int!
@@ -93,6 +96,11 @@ type GeneratedCard {
   quickSellValue: Float!
 }
 
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   getUser(uuid: String!): User!
   getAllUsers: [User!]!
@@ -100,6 +108,7 @@ type Query {
   getUserPendingFriends(playersId: [String!]!): [User!]!
   findAll: [GeneratedCard!]!
   findOne(id: String!): GeneratedCard!
+  findLineup(id: String!): Lineup!
   getUserLineups(id: String!): [Lineup!]!
   findUserCards(id: String!): [GeneratedCard!]!
   findSellingCards: [GeneratedCard!]!
@@ -110,6 +119,8 @@ type Mutation {
   changeClubName(changeClubName: ChangeClubName!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
+  deleteUserLineup(id: String!): Lineup!
+  updateLineupCard(updateLineupCard: UpdateLineupCard!): Lineup!
   createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
@@ -137,6 +148,7 @@ input CreateCardInput {
   club: String!
   league: String!
   type: String!
+  position: String!
   overall: Int!
   pace: Int!
   finalization: Int!
@@ -154,17 +166,13 @@ input CreateLineupInput {
   overall: Float
   totalOverall: Float
   owner: String!
-  player1: [String!]
-  player2: [String!]
-  player3: [String!]
-  player4: [String!]
-  player5: [String!]
-  player6: [String!]
-  player7: [String!]
-  player8: [String!]
-  player9: [String!]
-  player10: [String!]
-  player11: [String!]
+}
+
+input UpdateLineupCard {
+  lineupId: String!
+  playerId: String!
+  playerData: String!
+  index: Int!
 }
 
 input CreateGeneratedCardInput {
@@ -177,6 +185,7 @@ input CreateGeneratedCardInput {
   club: String!
   league: String!
   type: String!
+  position: String!
   overall: Int!
   pace: Int!
   finalization: Int!

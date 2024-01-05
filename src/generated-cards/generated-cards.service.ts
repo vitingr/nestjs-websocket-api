@@ -125,6 +125,7 @@ export class GeneratedCardsService {
       club: card.club,
       league: card.league,
       type: card.type,
+      position: card.position,
       overall: card.overall,
       pace: card.pace,
       finalization: card.finalization,

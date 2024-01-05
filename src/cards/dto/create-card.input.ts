@@ -23,6 +23,10 @@ export class CreateCardInput {
   @Field()
   type: string;
 
+  @Field()
+  @IsAlpha()
+  position: string;
+
   @Field((type) => Int)
   overall: number;
 

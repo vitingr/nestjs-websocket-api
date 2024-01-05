@@ -1,10 +1,9 @@
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import { InputType, Int, Field, Float } from '@nestjs/graphql';
+import { Prisma } from '@prisma/client';
+import { IsAlpha } from 'class-validator';
 
-@ObjectType()
-export class GeneratedCard {
-  @Field()
-  id: string;
-
+@InputType()
+class PlayerDataInput {
   @Field()
   cardImage: string;
   
@@ -14,7 +13,7 @@ export class GeneratedCard {
   @Field((type) => Boolean)
   selling: boolean;
 
-  @Field((type) => Date)
+  @Field((type) => Date, {nullable: true})
   created?: Date;
 
   @Field((type) => Float, {nullable: true})
@@ -67,4 +66,21 @@ export class GeneratedCard {
 
   @Field((type) => Float)
   quickSellValue: number;
+}
+
+@InputType()
+export class UpdateLineupCard {
+  @Field()
+  @IsAlpha()
+  lineupId: string;
+
+  @Field()
+  @IsAlpha()
+  playerId: string;
+
+  @Field()
+  playerData: string;
+
+  @Field((type) => Int)
+  index: number;
 }

@@ -20,6 +20,9 @@ export class Card {
   @Field()
   type: string;
 
+  @Field()
+  position: string;
+
   @Field((type) => Int)
   overall: number;
 

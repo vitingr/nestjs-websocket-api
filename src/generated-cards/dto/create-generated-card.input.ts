@@ -1,5 +1,5 @@
 import { InputType, Int, Field, Float } from '@nestjs/graphql';
-import { IsAlpha } from 'class-validator';
+import { IsAlpha, isAlpha } from 'class-validator';
 
 @InputType()
 export class CreateGeneratedCardInput {
@@ -36,6 +36,10 @@ export class CreateGeneratedCardInput {
   @IsAlpha()
   @Field()
   type: string;
+
+  @IsAlpha()
+  @Field()
+  position: string;
 
   @Field((type) => Int)
   overall: number;

@@ -48,6 +48,7 @@ model PlayerCard {
   league              String
   overall             Int
   type                String
+  position            String
   pace                Int
   finalization        Int
   pass                Int
@@ -61,27 +62,28 @@ model PlayerCard {
 }
 
 model PlayerCardGenerated {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  cardImage      String   @default("")
-  owner          String   @db.ObjectId
-  selling        Boolean  @default(false)
-  created        DateTime @default(now())
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  cardImage      String    @default("")
+  owner          String    @db.ObjectId
+  selling        Boolean   @default(false)
+  created        DateTime? @default(now())
   price          Float?
-  playerId       String   @db.ObjectId
+  playerId       String    @db.ObjectId
   name           String
   club           String
   league         String
   overall        Int
   type           String
+  position       String
   pace           Int
   finalization   Int
   pass           Int
   drible         Int
   defense        Int
   physic         Int
-  maxValue       Float    @default(10000)
-  minValue       Float    @default(150)
-  quickSellValue Float    @default(150)
+  maxValue       Float     @default(10000)
+  minValue       Float     @default(150)
+  quickSellValue Float     @default(150)
 
   // Relations
   userId User       @relation(fields: [owner], references: [id])
@@ -89,22 +91,22 @@ model PlayerCardGenerated {
 }
 
 model Lineup {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  overall      Float?   @default(0)
-  totalOverall Float?   @default(0)
-  owner        String   @db.ObjectId
-  player1      String[]
-  player2      String[]
-  player3      String[]
-  player4      String[]
-  player5      String[]
-  player6      String[]
-  player7      String[]
-  player8      String[]
-  player9      String[]
-  player10     String[]
-  player11     String[]
+  overall      Float? @default(0)
+  totalOverall Float? @default(0)
+  owner        String @db.ObjectId
+  player1      String?
+  player2      String?
+  player3      String?
+  player4      String?
+  player5      String?
+  player6      String?
+  player7      String?
+  player8      String?
+  player9      String?
+  player10     String?
+  player11     String?
 
   // Relations
   ownerId User @relation(fields: [owner], references: [id])
