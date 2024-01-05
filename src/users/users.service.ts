@@ -62,4 +62,48 @@ export class UsersService {
 
     return updateUser
   }
+
+  useMenuDriver(id: string): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        driverMenu: true
+      }
+    })
+  }
+
+  useHomeDriver(id: string): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        driverHome: true
+      }
+    })
+  }
+
+  useLineupDriver(id: string): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        driverLineup: true
+      }
+    })
+  }
+
+  useProfileDriver(id: string): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: id
+      },
+      data: {
+        driverProfile: true
+      }
+    })
+  }
 }

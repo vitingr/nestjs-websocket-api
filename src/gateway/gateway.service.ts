@@ -85,4 +85,48 @@ export class GatewayService {
 
     return updateFriend;
   }
+
+  async removeFriend(removeFriend: SendFriendInvite): Promise<User> {
+
+    const userId = removeFriend.userId
+    const friendId = removeFriend.friendId
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: removeFriend.userId
+      }
+    })
+    const friend = await this.prisma.user.findUnique({
+      where: {
+        id: removeFriend.friendId
+      }
+    }) 
+
+    const userUpdated = await this.prisma.user.update({
+      where: {
+        id: removeFriend.userId
+      },
+      data: {
+        friends: {
+          set: user.friends.filter((friendId) => friendId !== friendId),
+        },
+        qtdFriends: {decrement: 1}
+      }
+    })
+
+    const friendUpdated = await this.prisma.user.update({
+      where: {
+        id: removeFriend.friendId
+      },
+      data: {
+        friends: {
+          set: friend.friends.filter((userId) => userId !== userId),
+        },
+        qtdFriends: {decrement: 1}
+      }
+    })
+
+    return userUpdated
+
+  }
 }

@@ -8,9 +8,9 @@ import { join } from 'path';
 import { PrismaService } from './database/prisma.service';
 import { CardsModule } from './cards/cards.module';
 import { GatewayModule } from './gateway/gateway.module';
-import { SocketModule } from './socket/socket.module';
 import { LineupsModule } from './lineups/lineups.module';
 import { GeneratedCardsModule } from './generated-cards/generated-cards.module';
+import { OnlineModeModule } from './online-mode/online-mode.module';
 
 @Module({
   imports: [
@@ -21,9 +21,9 @@ import { GeneratedCardsModule } from './generated-cards/generated-cards.module';
     UsersModule,
     CardsModule,
     GatewayModule,
-    SocketModule,
     LineupsModule,
-    GeneratedCardsModule
+    GeneratedCardsModule,
+    OnlineModeModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

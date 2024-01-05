@@ -117,6 +117,10 @@ type Query {
 type Mutation {
   createNewUser(createUser: CreateUser!): User!
   changeClubName(changeClubName: ChangeClubName!): User!
+  useMenuDriver(id: String!): User!
+  useHomeDriver(id: String!): User!
+  useLineupDriver(id: String!): User!
+  useProfileDriver(id: String!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
   deleteUserLineup(id: String!): Lineup!

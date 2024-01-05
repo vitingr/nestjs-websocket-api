@@ -55,4 +55,9 @@ export class MyGateway implements OnModuleInit {
   cancelFriendInvite(@MessageBody() body: SendFriendInvite): Promise<User> {
     return this.GatewayService.cancelFriendInvite(body);
   }
+
+  @SubscribeMessage('removeFriend')
+  removeFriend(@MessageBody() body: SendFriendInvite): Promise<User> {
+    return this.GatewayService.removeFriend(body)
+  }
 }
