@@ -35,6 +35,7 @@ model User {
   victories           Int?                  @default(0)
   draws               Int?                  @default(0)
   loses               Int?                  @default(0)
+  searchingMatch      Boolean?              @default(false)
   PlayerCardGenerated PlayerCardGenerated[]
   Lineup              Lineup[]
   BadgeCreated        BadgeCreated[]
@@ -91,11 +92,11 @@ model PlayerCardGenerated {
 }
 
 model Lineup {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  overall      Float? @default(0)
-  totalOverall Float? @default(0)
-  owner        String @db.ObjectId
+  overall      Float?  @default(0)
+  totalOverall Float?  @default(0)
+  owner        String  @db.ObjectId
   player1      String?
   player2      String?
   player3      String?
@@ -137,4 +138,25 @@ model BadgeCreated {
   // Relations
   badge Badge @relation(fields: [badgeId], references: [id])
   owner User  @relation(fields: [ownerId], references: [id])
+}
+
+model Match {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @db.ObjectId
+  opponentId       String   @db.ObjectId
+  userAccepted     Boolean?
+  opponentAccepted Boolean?
+  round1           String?  @db.ObjectId
+  round2           String?  @db.ObjectId
+  round3           String?  @db.ObjectId
+  round4           String?  @db.ObjectId
+  round5           String?  @db.ObjectId
+  round6           String?  @db.ObjectId
+  round7           String?  @db.ObjectId
+  round8           String?  @db.ObjectId
+  round9           String?  @db.ObjectId
+  round10          String?  @db.ObjectId
+  round11          String?  @db.ObjectId
+  userPoints       Int?     @default(0)
+  opponentPoints   Int?     @default(0)
 }

@@ -10,6 +10,8 @@ import { Server, Socket } from 'socket.io';
 import { GatewayService } from './gateway.service';
 import { SendFriendInvite } from 'src/users/dto/send-invite';
 import { User } from 'src/users/entities/user-entity';
+import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
+import { SearchMatch } from './dto/search-match.dto';
 
 @WebSocketGateway({
   cors: {
@@ -28,10 +30,8 @@ export class MyGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('inviteUser')
-  async sendFriendInvite(
-    @MessageBody() body: SendFriendInvite
-  ) {
-    await this.GatewayService.sendFriendInvite(body);
+  sendFriendInvite(@MessageBody() body: SendFriendInvite) {
+    return this.GatewayService.sendFriendInvite(body);
 
     // this.server.emit('onInvite', {
     //   msg: 'Convite Enviado',
@@ -39,11 +39,11 @@ export class MyGateway implements OnModuleInit {
     //   socketId: body.socketId,
     // });
 
-    this.server.to(body.socketId).emit('onInvite', {
-      msg: 'Convite Enviado',
-      content: body,
-      socketId: body.socketId,
-    })
+    // this.server.to(body.socketId).emit('onInvite', {
+    //   msg: 'Convite Enviado',
+    //   content: body,
+    //   socketId: body.socketId,
+    // })
   }
 
   @SubscribeMessage('acceptInvite')
@@ -58,6 +58,45 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('removeFriend')
   removeFriend(@MessageBody() body: SendFriendInvite): Promise<User> {
-    return this.GatewayService.removeFriend(body)
+    return this.GatewayService.removeFriend(body);
+  }
+
+  @SubscribeMessage('searchMatch')
+  async searchMatch(@MessageBody() body: SearchMatch) {
+    const response = await this.GatewayService.searchMatch(body);
+
+    if (response) {
+      this.server.emit('matchFound', {
+        msg: 'Partida foi encontrada',
+        userId: response[0].id,
+        matchId: response[1].id,
+      });
+
+      this.server.emit('matchFound', {
+        msg: 'Partida foi encontrada',
+        userId: body.id,
+        matchId: response[1].id,
+      });
+    }
+  }
+
+  @SubscribeMessage('acceptMatch')
+  async acceptMatch(@MessageBody() body: AcceptMatchModeDto) {
+
+    const response = await this.GatewayService.acceptMatch(body);
+
+    if (response[0] === true) {
+      this.server.emit('matchAccepted', {
+        msg: 'Partida aceita por ambos dos jogadores',
+        userId: response[1],
+        matchId: response[3],
+      });
+
+      this.server.emit('matchAccepted', {
+        msg: 'Partida aceita por ambos dos jogadores',
+        userId: response[2],
+        matchId: response[3],
+      });
+    }
   }
 }

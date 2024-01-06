@@ -30,6 +30,7 @@ type User {
   victories: Int
   draws: Int
   loses: Int
+  searchingMatch: Boolean
 }
 
 type Card {

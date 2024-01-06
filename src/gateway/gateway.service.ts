@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
+import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
 import { SendFriendInvite } from 'src/users/dto/send-invite';
 import { User } from 'src/users/entities/user-entity';
+import { SearchMatch } from './dto/search-match.dto';
 
 @Injectable()
 export class GatewayService {
@@ -78,7 +80,9 @@ export class GatewayService {
       },
       data: {
         pendingFriends: {
-          set: friend.pendingFriends.filter((friendId) => friendId !== friendId),
+          set: friend.pendingFriends.filter(
+            (friendId) => friendId !== friendId,
+          ),
         },
       },
     });
@@ -87,46 +91,143 @@ export class GatewayService {
   }
 
   async removeFriend(removeFriend: SendFriendInvite): Promise<User> {
-
-    const userId = removeFriend.userId
-    const friendId = removeFriend.friendId
+    const userId = removeFriend.userId;
+    const friendId = removeFriend.friendId;
 
     const user = await this.prisma.user.findUnique({
       where: {
-        id: removeFriend.userId
-      }
-    })
+        id: removeFriend.userId,
+      },
+    });
     const friend = await this.prisma.user.findUnique({
       where: {
-        id: removeFriend.friendId
-      }
-    }) 
+        id: removeFriend.friendId,
+      },
+    });
 
     const userUpdated = await this.prisma.user.update({
       where: {
-        id: removeFriend.userId
+        id: removeFriend.userId,
       },
       data: {
         friends: {
           set: user.friends.filter((friendId) => friendId !== friendId),
         },
-        qtdFriends: {decrement: 1}
-      }
-    })
+        qtdFriends: { decrement: 1 },
+      },
+    });
 
     const friendUpdated = await this.prisma.user.update({
       where: {
-        id: removeFriend.friendId
+        id: removeFriend.friendId,
       },
       data: {
         friends: {
           set: friend.friends.filter((userId) => userId !== userId),
         },
-        qtdFriends: {decrement: 1}
+        qtdFriends: { decrement: 1 },
+      },
+    });
+
+    return userUpdated;
+  }
+
+  async searchMatch(body: SearchMatch) {
+    const usersAvaliable = await this.prisma.user.findMany({
+      where: {
+        searchingMatch: true,
+      },
+    });
+
+    if (usersAvaliable.length > 0) {
+      // Já possuem usuários buscando partidas
+      let choosedUser =
+        usersAvaliable[Math.floor(Math.random() * usersAvaliable.length)];
+
+      const newMatch = await this.prisma.match.create({
+        data: {
+          userId: body.id,
+          opponentId: choosedUser.id,
+        },
+      });
+
+      return [choosedUser, newMatch];
+    } else {
+      // Não existe nenhum usuário já buscando alguma partida
+      await this.prisma.user.update({
+        where: {
+          id: body.id,
+        },
+        data: {
+          searchingMatch: true,
+        },
+      });
+
+      return false;
+    }
+  }
+
+  async acceptMatch(data: AcceptMatchModeDto) {
+    let currentStatus: boolean
+
+    const match = await this.prisma.match.findUnique({
+      where: {
+        id: data.matchId,
+      },
+    });
+
+    if (data.userId === match.userId) {
+      if (data.cancel === false) {
+        await this.prisma.match.update({
+          where: {
+            id: data.matchId,
+          },
+          data: {
+            userAccepted: true,
+          },
+        });
+        currentStatus = true
+      } else {
+        await this.prisma.match.update({
+          where: {
+            id: data.matchId,
+          },
+          data: {
+            userAccepted: false,
+          },
+        });
+        currentStatus = false
       }
-    })
+    }
 
-    return userUpdated
+    if (data.userId === match.opponentId) {
+      if (data.cancel === false) {
+        await this.prisma.match.update({
+          where: {
+            id: data.matchId,
+          },
+          data: {
+            opponentAccepted: true,
+          },
+        });
+        currentStatus = true
+      } else {
+        await this.prisma.match.update({
+          where: {
+            id: data.matchId,
+          },
+          data: {
+            opponentAccepted: false,
+          },
+        });
+        currentStatus = false
+      }
+    }
 
+    if (match.opponentAccepted === true || match.userAccepted === true && currentStatus === true) {
+      return [true, match.userId, match.opponentId, match.id];
+    } else {
+      return [false]
+    }
   }
 }

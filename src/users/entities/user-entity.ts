@@ -47,7 +47,7 @@ export class User {
   @Field((type) => Int, { nullable: true })
   qtdFriends: number;
 
-  @Field((type) => [String], {nullable: true})
+  @Field((type) => [String], { nullable: true })
   pendingFriends: string[];
 
   @Field((type) => [String], { nullable: true })
@@ -79,7 +79,10 @@ export class User {
 
   @Field((type) => Int, { nullable: true })
   draws: number;
-  
+
   @Field((type) => Int, { nullable: true })
   loses: number;
+
+  @Field((type) => Boolean, { nullable: true })
+  searchingMatch: boolean;
 }
