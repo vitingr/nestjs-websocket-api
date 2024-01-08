@@ -39,27 +39,38 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => User)
-  changeClubName(@Args('changeClubName') changeClubName: ChangeClubName): Promise<User> {
-    return this.userService.changeClubName(changeClubName)
+  changeClubName(
+    @Args('changeClubName') changeClubName: ChangeClubName,
+  ): Promise<User> {
+    return this.userService.changeClubName(changeClubName);
   }
 
   @Mutation((returns) => User)
-  useMenuDriver(@Args('id', {type: () => String}) id: string): Promise<User> {
-    return this.userService.useMenuDriver(id)
+  useMenuDriver(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.userService.useMenuDriver(id);
   }
 
   @Mutation((returns) => User)
-  useHomeDriver(@Args('id', {type: () => String}) id: string): Promise<User> {
-    return this.userService.useHomeDriver(id)
+  useHomeDriver(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.userService.useHomeDriver(id);
   }
 
   @Mutation((returns) => User)
-  useLineupDriver(@Args('id', {type: () => String}) id: string): Promise<User> {
-    return this.userService.useLineupDriver(id)
+  useLineupDriver(
+    @Args('id', { type: () => String }) id: string,
+  ): Promise<User> {
+    return this.userService.useLineupDriver(id);
   }
 
   @Mutation((returns) => User)
-  useProfileDriver(@Args('id', {type: () => String}) id: string): Promise<User> {
-    return this.userService.useProfileDriver(id)
+  useProfileDriver(
+    @Args('id', { type: () => String }) id: string,
+  ): Promise<User> {
+    return this.userService.useProfileDriver(id);
+  }
+
+  @Query((returns) => User)
+  findOneUser(@Args('id', { type: () => String }) id: string): Promise<User> {
+    return this.userService.findOneUser(id);
   }
 }

@@ -106,4 +106,12 @@ export class UsersService {
       }
     })
   }
+
+  findOneUser(id: string): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: id
+      }
+    })
+  }
 }

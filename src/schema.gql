@@ -31,6 +31,7 @@ type User {
   draws: Int
   loses: Int
   searchingMatch: Boolean
+  currentLineup: String
 }
 
 type Card {
@@ -107,10 +108,12 @@ type Query {
   getAllUsers: [User!]!
   getUserFriends(friends: [String!]!): [User!]!
   getUserPendingFriends(playersId: [String!]!): [User!]!
+  findOneUser(id: String!): User!
   findAll: [GeneratedCard!]!
   findOne(id: String!): GeneratedCard!
   findLineup(id: String!): Lineup!
   getUserLineups(id: String!): [Lineup!]!
+  findUserCurrentLineup(id: String!): Lineup!
   findUserCards(id: String!): [GeneratedCard!]!
   findSellingCards: [GeneratedCard!]!
 }
@@ -126,6 +129,7 @@ type Mutation {
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
   deleteUserLineup(id: String!): Lineup!
   updateLineupCard(updateLineupCard: UpdateLineupCard!): Lineup!
+  selectLineup(selectLineup: SelectLineup!): User!
   createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
@@ -178,6 +182,11 @@ input UpdateLineupCard {
   playerId: String!
   playerData: String!
   index: Int!
+}
+
+input SelectLineup {
+  userId: String!
+  lineupId: String!
 }
 
 input CreateGeneratedCardInput {

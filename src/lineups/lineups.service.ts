@@ -5,6 +5,8 @@ import { Lineup } from './entities/lineup.entity';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateLineupCard } from './dto/update-lineup-card';
 import { PlayerCardProps } from 'types';
+import { SelectLineup } from './dto/select-lineup';
+import { User } from 'src/users/entities/user-entity';
 
 @Injectable()
 export class LineupsService {
@@ -85,5 +87,32 @@ export class LineupsService {
       };
     });
 
+  }
+
+  selectLineup(data: SelectLineup): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: data.userId
+      },
+      data: {
+        currentLineup: data.lineupId
+      }
+    })
+  }
+
+  async findUserCurrentLineup(id: string): Promise<Lineup> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id
+      }
+    })
+
+    const lineup = await this.prisma.lineup.findUnique({
+      where: {
+        id: user.currentLineup
+      }
+    })
+
+    return lineup
   }
 }

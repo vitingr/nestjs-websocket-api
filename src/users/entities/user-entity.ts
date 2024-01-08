@@ -85,4 +85,7 @@ export class User {
 
   @Field((type) => Boolean, { nullable: true })
   searchingMatch: boolean;
+
+  @Field({nullable: true})
+  currentLineup: string;
 }

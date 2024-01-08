@@ -13,7 +13,7 @@ model User {
   name                String
   firstname           String
   lastname            String
-  clubname            String                @unique
+  clubname            String                
   email               String                @unique
   password            String?
   currency            Float                 @default(500)
@@ -36,6 +36,7 @@ model User {
   draws               Int?                  @default(0)
   loses               Int?                  @default(0)
   searchingMatch      Boolean?              @default(false)
+  currentLineup       String?               @db.ObjectId
   PlayerCardGenerated PlayerCardGenerated[]
   Lineup              Lineup[]
   BadgeCreated        BadgeCreated[]
