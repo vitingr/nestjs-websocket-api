@@ -168,7 +168,7 @@ export class GatewayService {
   }
 
   async acceptMatch(data: AcceptMatchModeDto) {
-    let currentStatus: boolean
+    let currentStatus: boolean;
 
     const match = await this.prisma.match.findUnique({
       where: {
@@ -186,7 +186,7 @@ export class GatewayService {
             userAccepted: true,
           },
         });
-        currentStatus = true
+        currentStatus = true;
       } else {
         await this.prisma.match.update({
           where: {
@@ -196,7 +196,7 @@ export class GatewayService {
             userAccepted: false,
           },
         });
-        currentStatus = false
+        currentStatus = false;
       }
     }
 
@@ -210,7 +210,7 @@ export class GatewayService {
             opponentAccepted: true,
           },
         });
-        currentStatus = true
+        currentStatus = true;
       } else {
         await this.prisma.match.update({
           where: {
@@ -220,14 +220,78 @@ export class GatewayService {
             opponentAccepted: false,
           },
         });
-        currentStatus = false
+        currentStatus = false;
       }
     }
 
-    if (match.opponentAccepted === true || match.userAccepted === true && currentStatus === true) {
+    if (
+      match.opponentAccepted === true ||
+      (match.userAccepted === true && currentStatus === true)
+    ) {
       return [true, match.userId, match.opponentId, match.id];
     } else {
-      return [false]
+      return [false];
     }
+  }
+
+  async giveMatchPrize(winner: string, loser: string): Promise<User> {
+    console.log(`winner ${winner} || loser ${loser}`)
+    const winnerUpdated = await this.prisma.user.update({
+      where: {
+        id: winner,
+      },
+      data: {
+        currency: {
+          increment: 500,
+        },
+        points: {
+          increment: 150,
+        },
+      },
+    });
+
+    const loserUpdated = await this.prisma.user.update({
+      where: {
+        id: loser,
+      },
+      data: {
+        currency: {
+          increment: 250,
+        },
+        points: {
+          decrement: 50,
+        },
+      },
+    });
+
+    return winnerUpdated;
+  }
+
+  async giveDrawPrize(player1: string, player2: string): Promise<User> {
+    console.log(`player1 ${player1} || player2 ${player2}`)
+
+    const player1Updated = await this.prisma.user.update({
+      where: {
+        id: player1,
+      },
+      data: {
+        currency: {
+          increment: 325,
+        },
+      },
+    });
+
+    const player2Updated = await this.prisma.user.update({
+      where: {
+        id: player2,
+      },
+      data: {
+        currency: {
+          increment: 325,
+        },
+      },
+    });
+
+    return player1Updated;
   }
 }

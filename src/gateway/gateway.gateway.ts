@@ -28,6 +28,8 @@ export class MyGateway implements OnModuleInit {
   private players: { [key: string]: Socket } = {};
   private chosenCards: { [key: string]: number } = {};
   private roundCount: number = 0;
+  private player1_score: number = 0;
+  private player2_score: number = 0;
 
   onModuleInit() {
     console.log('Iniciando Servidor...');
@@ -99,22 +101,22 @@ export class MyGateway implements OnModuleInit {
       console.log(`Usuário ${data.username} já está conectado.`);
       return;
     }
-  
+
     // Adicione o jogador à lista
     this.players[data.username] = client;
-  
+
     // Emita o evento 'gameJoined' para o jogador que acabou de se conectar
     client.emit('gameJoined', {
       players: Object.keys(this.players),
     });
-  
+
     // Verifique se há dois jogadores e inicie a rodada se necessário
     if (Object.keys(this.players).length === 2) {
       this.startRound();
     }
-  
+
     // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
-    Object.values(this.players).forEach(playerClient => {
+    Object.values(this.players).forEach((playerClient) => {
       playerClient.emit('gameJoined', {
         players: Object.keys(this.players),
         matchId: data.matchId,
@@ -124,6 +126,8 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('chooseCard')
   handleChoosedCard(client: Socket, cardValue: number) {
+    console.log(cardValue);
+
     const username = this.getUsernameBySocket(client);
 
     // Verificar se o jogador já escolheu uma carta nesta rodada
@@ -150,9 +154,11 @@ export class MyGateway implements OnModuleInit {
     // Comparar se as cartas escolhidas e determine o vencedor da rodada
     const usernames = Object.keys(this.chosenCards);
 
+    // Players Data
     const player1 = usernames[0];
     const player2 = usernames[1];
 
+    // Carta escolhida pelo usuário durante a rodada
     const card1 = this.chosenCards[player1];
     const card2 = this.chosenCards[player2];
 
@@ -160,9 +166,11 @@ export class MyGateway implements OnModuleInit {
 
     if (card1 > card2) {
       winner = player1;
+      this.player1_score++;
     } else {
       if (card1 < card2) {
         winner = player2;
+        this.player2_score++;
       } else {
         winner = 'draw';
       }
@@ -175,7 +183,32 @@ export class MyGateway implements OnModuleInit {
     this.chosenCards = {};
 
     // Inicie a próxima rodada
-    this.startRound();
+    if (this.roundCount < 11) {
+      this.startRound();
+    } else {
+      this.resolveMatch();
+    }
+  }
+
+  private resolveMatch() {
+    const usernames = Object.keys(this.players);
+
+    // Players Data
+    const player1 = usernames[0];
+    const player2 = usernames[1];
+
+    if (this.player1_score > this.player2_score) {
+      this.broadcast('matchWinner', player1);
+      this.GatewayService.giveMatchPrize(player1, player2);
+    } else {
+      if (this.player2_score > this.player1_score) {
+        this.broadcast('matchWinner', player2);
+        this.GatewayService.giveMatchPrize(player2, player1);
+      } else {
+        this.broadcast('matchWinner', 'Draw');
+        this.GatewayService.giveDrawPrize(player1, player2);
+      }
+    }
   }
 
   private getUsernameBySocket(client: Socket): string {
