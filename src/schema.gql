@@ -134,6 +134,11 @@ type Mutation {
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
   openPlayersPack(id: String!): [GeneratedCard!]!
+  openRareGoldPack(id: String!): [GeneratedCard!]!
+  openGoldPack(id: String!): [GeneratedCard!]!
+  openRareSilverPack(id: String!): [GeneratedCard!]!
+  openSilverPack(id: String!): [GeneratedCard!]!
+  openBronzePack(id: String!): [GeneratedCard!]!
 }
 
 input CreateUser {

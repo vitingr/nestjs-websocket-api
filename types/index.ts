@@ -1,11 +1,6 @@
 export interface PlayerCardProps {
   id: string;
   cardImage: string;
-  owner: string;
-  selling: boolean;
-  created: Date;
-  price: number;
-  playerId: string;
   name: string;
   club: string;
   league: string;

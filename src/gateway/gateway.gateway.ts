@@ -58,8 +58,11 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('searchMatch')
   async searchMatch(@MessageBody() body: SearchMatch) {
+
+    // Pegar os dados do usuário para a criação de uma nova partida
     const response = await this.GatewayService.searchMatch(body);
 
+    // Encontrar uma partida para o usuário
     if (response) {
       this.server.emit('matchFound', {
         msg: 'Partida foi encontrada',
@@ -67,6 +70,7 @@ export class MyGateway implements OnModuleInit {
         matchId: response[1].id,
       });
 
+      // Caso a partida seja encontrada emitir esse evento
       this.server.emit('matchFound', {
         msg: 'Partida foi encontrada',
         userId: body.id,
@@ -79,13 +83,13 @@ export class MyGateway implements OnModuleInit {
   async acceptMatch(@MessageBody() body: AcceptMatchModeDto) {
     const response = await this.GatewayService.acceptMatch(body);
 
+    // Caso seja aceita por ambos, emitir esse evento
     if (response[0] === true) {
       this.server.emit('matchAccepted', {
         msg: 'Partida aceita por ambos dos jogadores',
         userId: response[1],
         matchId: response[3],
       });
-
       this.server.emit('matchAccepted', {
         msg: 'Partida aceita por ambos dos jogadores',
         userId: response[2],
@@ -96,7 +100,8 @@ export class MyGateway implements OnModuleInit {
 
   // Logicas do Jogo
   @SubscribeMessage('joinGame')
-  handleJoinGame(client: Socket, data: JoinGameDto) {
+  async handleJoinGame(client: Socket, data: JoinGameDto) {
+    // Verificar se o usuário já está conectado dentro do servidor
     if (this.players[data.username]) {
       console.log(`Usuário ${data.username} já está conectado.`);
       return;
@@ -112,7 +117,7 @@ export class MyGateway implements OnModuleInit {
 
     // Verifique se há dois jogadores e inicie a rodada se necessário
     if (Object.keys(this.players).length === 2) {
-      this.startRound();
+      this.startRound(data.username);
     }
 
     // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
@@ -126,8 +131,8 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('chooseCard')
   handleChoosedCard(client: Socket, cardValue: number) {
-    console.log(cardValue);
 
+    // Buscar o usuário através do SocketID
     const username = this.getUsernameBySocket(client);
 
     // Verificar se o jogador já escolheu uma carta nesta rodada
@@ -140,14 +145,18 @@ export class MyGateway implements OnModuleInit {
     }
   }
 
-  private startRound() {
+  private async startRound(data?: any) {
+
+    const usernames = Object.keys(this.players);
+
     // Iniciar uma nova rodada, notificando os jogadores
     this.roundCount++;
     this.broadcast('startRound', this.roundCount);
 
     // Enviar a lista de cartas disponíveis para os jogadores
-    const avaliableCards = [1, 2, 3, 4, 5];
-    this.broadcast('avaliableCards', avaliableCards);
+    const userLineupAvaliableCards = await this.GatewayService.getUserAvaliableCards(data);
+
+    this.broadcast('avaliableCards', JSON.stringify(userLineupAvaliableCards));
   }
 
   private resolveRound() {

@@ -4,6 +4,8 @@ import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
 import { SendFriendInvite } from 'src/users/dto/send-invite';
 import { User } from 'src/users/entities/user-entity';
 import { SearchMatch } from './dto/search-match.dto';
+import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
+import { Lineup } from '@prisma/client';
 
 @Injectable()
 export class GatewayService {
@@ -293,5 +295,22 @@ export class GatewayService {
     });
 
     return player1Updated;
+  }
+
+  async getUserAvaliableCards(userId: string): Promise<Lineup> {
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId
+      }
+    })
+
+    const userLineup = await this.prisma.lineup.findUnique({
+      where: {
+        id: user.currentLineup
+      }
+    })
+
+    return userLineup
   }
 }
