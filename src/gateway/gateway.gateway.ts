@@ -13,6 +13,7 @@ import { User } from 'src/users/entities/user-entity';
 import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
 import { SearchMatch } from './dto/search-match.dto';
 import { JoinGameDto } from './dto/join-game.dto';
+import { Lineup } from '@prisma/client';
 
 @WebSocketGateway({
   cors: {
@@ -27,6 +28,7 @@ export class MyGateway implements OnModuleInit {
 
   private players: { [key: string]: Socket } = {};
   private chosenCards: { [key: string]: number } = {};
+  private availableCardsPerPlayer: { [username: string]: Lineup } = {};
   private roundCount: number = 0;
   private player1_score: number = 0;
   private player2_score: number = 0;
@@ -58,7 +60,6 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('searchMatch')
   async searchMatch(@MessageBody() body: SearchMatch) {
-
     // Pegar os dados do usuário para a criação de uma nova partida
     const response = await this.GatewayService.searchMatch(body);
 
@@ -101,37 +102,62 @@ export class MyGateway implements OnModuleInit {
   // Logicas do Jogo
   @SubscribeMessage('joinGame')
   async handleJoinGame(client: Socket, data: JoinGameDto) {
+    // // Verificar se o usuário já está conectado dentro do servidor
+    // if (this.players[data.username]) {
+    //   console.log(`Usuário ${data.username} já está conectado.`);
+    // }
+
+    // // Adicione o jogador à lista
+    // this.players[data.username] = client;
+
+    // // Emita o evento 'gameJoined' para o jogador que acabou de se conectar
+    // client.emit('gameJoined', {
+    //   players: Object.keys(this.players),
+    // });
+    // // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
+    // Object.values(this.players).forEach(async (playerClient) => {
+    //   playerClient.emit('gameJoined', {
+    //     players: Object.keys(this.players),
+    //     matchId: data.matchId,
+    //   });
+    //   // Verifique se há dois jogadores e inicie a rodada se necessário
+    //   if (Object.keys(this.players).length === 2) {
+    //     await this.startRound(data.username);
+    //   }
+    // });
     // Verificar se o usuário já está conectado dentro do servidor
     if (this.players[data.username]) {
       console.log(`Usuário ${data.username} já está conectado.`);
-      return;
     }
-
+  
     // Adicione o jogador à lista
     this.players[data.username] = client;
-
-    // Emita o evento 'gameJoined' para o jogador que acabou de se conectar
-    client.emit('gameJoined', {
-      players: Object.keys(this.players),
-    });
-
-    // Verifique se há dois jogadores e inicie a rodada se necessário
-    if (Object.keys(this.players).length === 2) {
-      this.startRound(data.username);
-    }
-
+  
     // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
-    Object.values(this.players).forEach((playerClient) => {
-      playerClient.emit('gameJoined', {
-        players: Object.keys(this.players),
-        matchId: data.matchId,
+    const allPlayers = Object.keys(this.players);
+  
+    // Use Promise.all para esperar que todas as emissões sejam concluídas
+    await Promise.all(allPlayers.map(async (username) => {
+      const playerClient = this.players[username];
+  
+      // Use uma Promise para aguardar a conclusão da emissão
+      return new Promise(async (resolve, reject) => {
+        playerClient.emit('gameJoined', {
+          players: allPlayers,
+          matchId: data.matchId,
+        })
+        if (Object.keys(this.players).length === 2) {
+          await this.startRound(data.username);
+        }
       });
-    });
+    }));
+  
+    // O código aqui só será executado após todas as emissões serem concluídas
+    console.log("Todas as emissões foram concluídas.");
   }
 
   @SubscribeMessage('chooseCard')
   handleChoosedCard(client: Socket, cardValue: number) {
-
     // Buscar o usuário através do SocketID
     const username = this.getUsernameBySocket(client);
 
@@ -146,7 +172,7 @@ export class MyGateway implements OnModuleInit {
   }
 
   private async startRound(data?: any) {
-
+    console.log(`${data} se conectou`);
     const usernames = Object.keys(this.players);
 
     // Iniciar uma nova rodada, notificando os jogadores
@@ -154,9 +180,22 @@ export class MyGateway implements OnModuleInit {
     this.broadcast('startRound', this.roundCount);
 
     // Enviar a lista de cartas disponíveis para os jogadores
-    const userLineupAvaliableCards = await this.GatewayService.getUserAvaliableCards(data);
 
-    this.broadcast('avaliableCards', JSON.stringify(userLineupAvaliableCards));
+    const availableCardsPromises = usernames.map(async (username) => {
+      try {
+        const userLineupAvailableCards =
+          await this.GatewayService.getUserAvailableCards(username);
+        this.availableCardsPerPlayer[username] = userLineupAvailableCards;
+        this.broadcast(
+          'availableCards',
+          JSON.stringify(userLineupAvailableCards),
+        );
+      } catch (error) {
+        console.error(`Error sending availableCards to ${username}:`, error);
+      }
+    });
+
+    await Promise.all(availableCardsPromises);
   }
 
   private resolveRound() {

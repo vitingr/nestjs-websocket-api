@@ -297,7 +297,7 @@ export class GatewayService {
     return player1Updated;
   }
 
-  async getUserAvaliableCards(userId: string): Promise<Lineup> {
+  async getUserAvailableCards(userId: string): Promise<Lineup> {
 
     const user = await this.prisma.user.findUnique({
       where: {

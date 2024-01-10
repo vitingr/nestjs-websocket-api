@@ -70,7 +70,6 @@ export class GeneratedCardsResolver {
     return this.generatedCardsService.openGoldPack(id);
   }
 
-  @Mutation((returns) => [GeneratedCard])
   openRareSilverPack(
     @Args('id', { type: () => String }) id: string,
   ): Promise<GeneratedCard[]> {
