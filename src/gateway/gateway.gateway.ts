@@ -102,58 +102,34 @@ export class MyGateway implements OnModuleInit {
   // Logicas do Jogo
   @SubscribeMessage('joinGame')
   async handleJoinGame(client: Socket, data: JoinGameDto) {
-    // // Verificar se o usuário já está conectado dentro do servidor
-    // if (this.players[data.username]) {
-    //   console.log(`Usuário ${data.username} já está conectado.`);
-    // }
-
-    // // Adicione o jogador à lista
-    // this.players[data.username] = client;
-
-    // // Emita o evento 'gameJoined' para o jogador que acabou de se conectar
-    // client.emit('gameJoined', {
-    //   players: Object.keys(this.players),
-    // });
-    // // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
-    // Object.values(this.players).forEach(async (playerClient) => {
-    //   playerClient.emit('gameJoined', {
-    //     players: Object.keys(this.players),
-    //     matchId: data.matchId,
-    //   });
-    //   // Verifique se há dois jogadores e inicie a rodada se necessário
-    //   if (Object.keys(this.players).length === 2) {
-    //     await this.startRound(data.username);
-    //   }
-    // });
     // Verificar se o usuário já está conectado dentro do servidor
     if (this.players[data.username]) {
       console.log(`Usuário ${data.username} já está conectado.`);
     }
-  
+
     // Adicione o jogador à lista
     this.players[data.username] = client;
-  
+
     // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
     const allPlayers = Object.keys(this.players);
-  
+
     // Use Promise.all para esperar que todas as emissões sejam concluídas
-    await Promise.all(allPlayers.map(async (username) => {
-      const playerClient = this.players[username];
-  
-      // Use uma Promise para aguardar a conclusão da emissão
-      return new Promise(async (resolve, reject) => {
-        playerClient.emit('gameJoined', {
-          players: allPlayers,
-          matchId: data.matchId,
-        })
-        if (Object.keys(this.players).length === 2) {
-          await this.startRound(data.username);
-        }
-      });
-    }));
-  
-    // O código aqui só será executado após todas as emissões serem concluídas
-    console.log("Todas as emissões foram concluídas.");
+    await Promise.all(
+      allPlayers.map(async (username) => {
+        const playerClient = this.players[username];
+
+        // Use uma Promise para aguardar a conclusão da emissão
+        return new Promise(async () => {
+          playerClient.emit('gameJoined', {
+            players: allPlayers,
+            matchId: data.matchId,
+          });
+          if (Object.keys(this.players).length === 2) {
+            await this.startRound();
+          }
+        });
+      }),
+    );
   }
 
   @SubscribeMessage('chooseCard')
@@ -171,31 +147,30 @@ export class MyGateway implements OnModuleInit {
     }
   }
 
-  private async startRound(data?: any) {
-    console.log(`${data} se conectou`);
-    const usernames = Object.keys(this.players);
-
-    // Iniciar uma nova rodada, notificando os jogadores
+  private async startRound() {
+    // // Iniciar uma nova rodada, notificando os jogadores
     this.roundCount++;
     this.broadcast('startRound', this.roundCount);
 
-    // Enviar a lista de cartas disponíveis para os jogadores
+    const userLineupAvailableCards =
+      await this.GatewayService.getUserAvailableCards(
+        Object.keys(this.players),
+      );
 
-    const availableCardsPromises = usernames.map(async (username) => {
-      try {
-        const userLineupAvailableCards =
-          await this.GatewayService.getUserAvailableCards(username);
-        this.availableCardsPerPlayer[username] = userLineupAvailableCards;
-        this.broadcast(
-          'availableCards',
-          JSON.stringify(userLineupAvailableCards),
-        );
-      } catch (error) {
-        console.error(`Error sending availableCards to ${username}:`, error);
-      }
-    });
+    const allPlayers = Object.keys(this.players);
 
-    await Promise.all(availableCardsPromises);
+    // Use Promise.all para esperar que todas as emissões sejam concluídas
+    await Promise.all(
+      allPlayers.map(async () => {
+        // Use uma Promise para aguardar a conclusão da emissão
+        return new Promise(async () => {
+          this.broadcast(
+            'availableCards',
+            JSON.stringify(userLineupAvailableCards),
+          );
+        });
+      }),
+    );
   }
 
   private resolveRound() {

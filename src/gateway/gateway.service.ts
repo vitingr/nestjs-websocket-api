@@ -297,20 +297,32 @@ export class GatewayService {
     return player1Updated;
   }
 
-  async getUserAvailableCards(userId: string): Promise<Lineup> {
+  async getUserAvailableCards(usersId: string[]): Promise<Lineup[]> {
 
-    const user = await this.prisma.user.findUnique({
+    const user1 = await this.prisma.user.findUnique({
       where: {
-        id: userId
+        id: usersId[0]
       }
     })
 
-    const userLineup = await this.prisma.lineup.findUnique({
+    const user2 = await this.prisma.user.findUnique({
       where: {
-        id: user.currentLineup
+        id: usersId[1]
+      }
+    })    
+
+    const user1Lineup = await this.prisma.lineup.findUnique({
+      where: {
+        id: user1.currentLineup
       }
     })
 
-    return userLineup
+    const user2Lineup = await this.prisma.lineup.findUnique({
+      where: {
+        id: user2.currentLineup
+      }
+    })
+
+    return [user1Lineup, user2Lineup]
   }
 }
