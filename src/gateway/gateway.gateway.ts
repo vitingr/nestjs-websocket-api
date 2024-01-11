@@ -125,8 +125,6 @@ export class MyGateway implements OnModuleInit {
     const sortedUser = allPlayers[indiceAleatorio];
     this.currentTurn = sortedUser;
 
-    console.log(`usuario sorteado: ${this.currentTurn}`);
-
     if (this.currentTurn) {
       // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
       for (const username of allPlayers) {
@@ -142,8 +140,6 @@ export class MyGateway implements OnModuleInit {
       // Iniciar a rodada se houver 2 jogadores
       if (allPlayers.length === 2) {
         if (this.allPlayersAcknowledged()) {
-          this.handleAllPlayersAcknowledged();
-
           await this.startRound();
         }
       }
@@ -152,28 +148,30 @@ export class MyGateway implements OnModuleInit {
 
   @SubscribeMessage('chooseCard')
   async handleChoosedCard(client: Socket, cardValue: number) {
+    this.resetPlayerAcknowledgments();
+
     const allPlayers = Object.keys(this.players);
 
     await this.changeTurn();
 
-    await Promise.all(
-      allPlayers.map(async (player) => {
-        await new Promise<void>((resolve) => {
-          this.broadcast('currentTurn', this.currentTurn);
-          resolve();
-        });
-      }),
-    );
+    for (const username of allPlayers) {
+      const playerClient = this.players[username];
 
-    // Buscar o usuário através do SocketID
-    const username = this.getUsernameBySocket(client);
+      playerClient.emit('currentTurn', this.currentTurn);
+      this.playerAcknowledgments[username] = true;
+    }
 
-    // Verificar se o jogador já escolheu uma carta nesta rodada
-    if (!this.chosenCards[username]) {
-      this.chosenCards[username] = cardValue;
+    if (this.allPlayersAcknowledged()) {
+      // Buscar o usuário através do SocketID
+      const username = this.getUsernameBySocket(client);
 
-      if (Object.keys(this.chosenCards).length === 2) {
-        this.resolveRound();
+      // Verificar se o jogador já escolheu uma carta nesta rodada
+      if (!this.chosenCards[username]) {
+        this.chosenCards[username] = cardValue;
+
+        if (Object.keys(this.chosenCards).length === 2) {
+          this.resolveRound();
+        }
       }
     }
   }
@@ -199,31 +197,27 @@ export class MyGateway implements OnModuleInit {
         JSON.stringify(userLineupAvailableCards),
       );
 
-      console.log('Adicinou alguem na lista');
       this.playerAcknowledgments[username] = true;
     }
-
-    console.log(this.playerAcknowledgments);
 
     if (this.allPlayersAcknowledged()) {
       console.log('Round começou para todos');
     }
   }
 
-  private resolveRound() {
+  private async resolveRound() {
+    this.resetPlayerAcknowledgments();
+
     // Comparar se as cartas escolhidas e determine o vencedor da rodada
-    const usernames = Object.keys(this.chosenCards);
+    const allPlayers = Object.keys(this.chosenCards);
 
     // Players Data
-    const player1 = usernames[0];
-    const player2 = usernames[1];
+    const player1 = allPlayers[0];
+    const player2 = allPlayers[1];
 
     // Carta escolhida pelo usuário durante a rodada
     const card1 = this.chosenCards[player1];
     const card2 = this.chosenCards[player2];
-
-    const player1Score = this.player1_score;
-    const player2Score = this.player2_score;
 
     let winner: string;
 
@@ -247,23 +241,34 @@ export class MyGateway implements OnModuleInit {
       }
     }
 
-    // Notificar os jogadores sobre o vencedor da rodada
-    this.broadcast('roundWinner', {
-      winner,
-      card1,
-      card2,
-      player1Score,
-      player2Score,
-    });
+    const player1Score = this.player1_score
+    const player2Score = this.player2_score
 
-    // Reinicie as escolhas de cartas para a próxima rodada
-    this.chosenCards = {};
+    for (const username of allPlayers) {
+      const playerClient = this.players[username];
 
-    // Inicie a próxima rodada
-    if (this.roundCount < 11) {
-      this.startRound();
-    } else {
-      this.resolveMatch();
+      // Notificar os jogadores sobre o vencedor da rodada
+      playerClient.emit('roundWinner', {
+        winner,
+        card1,
+        card2,
+        player1Score,
+        player2Score
+      });
+
+      this.playerAcknowledgments[username] = true;
+    }
+
+    if (this.allPlayersAcknowledged()) {
+      // Reinicie as escolhas de cartas para a próxima rodada
+      this.chosenCards = {};
+
+      // Inicie a próxima rodada
+      if (this.roundCount < 11) {
+        await this.startRound();
+      } else {
+        await this.resolveMatch();
+      }
     }
   }
 
@@ -321,8 +326,6 @@ export class MyGateway implements OnModuleInit {
 
     if (this.allPlayersAcknowledged()) {
       console.log('Trocando jogador da rodada');
-    } else {
-      console.log('Algum jogador não recebeu a mensagem');
     }
   }
 
@@ -333,10 +336,6 @@ export class MyGateway implements OnModuleInit {
       playerIds.length === 2 &&
       playerIds.every((playerId) => this.playerAcknowledgments[playerId])
     );
-  }
-
-  private handleAllPlayersAcknowledged(): void {
-    console.log('Todos jogadores receberam o emit');
   }
 
   private resetPlayerAcknowledgments(): void {
