@@ -14,6 +14,7 @@ import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
 import { SearchMatch } from './dto/search-match.dto';
 import { JoinGameDto } from './dto/join-game.dto';
 import { Lineup } from '@prisma/client';
+import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
 
 @WebSocketGateway({
   cors: {
@@ -27,7 +28,9 @@ export class MyGateway implements OnModuleInit {
   constructor(private readonly GatewayService: GatewayService) {}
 
   private players: { [key: string]: Socket } = {};
-  private chosenCards: { [key: string]: number } = {};
+  private chosenCards: { [key: string]: GeneratedCard } = {};
+  private currentStat: string = "free";
+  private usedCards: string[] = [];
   private availableCardsPerPlayer: { [username: string]: Lineup } = {};
   private currentTurn: string = '';
   private roundCount: number = 0;
@@ -133,7 +136,10 @@ export class MyGateway implements OnModuleInit {
           players: allPlayers,
           matchId: data.matchId,
         });
-        playerClient.emit('currentTurn', this.currentTurn);
+        playerClient.emit('currentTurn', {
+          turn: this.currentTurn,
+          currentStat: this.currentStat
+        });
         this.playerAcknowledgments[username] = true;
       }
 
@@ -147,8 +153,13 @@ export class MyGateway implements OnModuleInit {
   }
 
   @SubscribeMessage('chooseCard')
-  async handleChoosedCard(client: Socket, cardValue: number) {
+  async handleChoosedCard(
+    client: Socket,
+    data: { card: GeneratedCard; stat: string },
+  ) {
     this.resetPlayerAcknowledgments();
+
+    this.currentStat = data.stat
 
     const allPlayers = Object.keys(this.players);
 
@@ -157,7 +168,10 @@ export class MyGateway implements OnModuleInit {
     for (const username of allPlayers) {
       const playerClient = this.players[username];
 
-      playerClient.emit('currentTurn', this.currentTurn);
+      playerClient.emit('currentTurn', {
+        turn: this.currentTurn,
+        currentStat: data.stat
+      });
       this.playerAcknowledgments[username] = true;
     }
 
@@ -167,10 +181,12 @@ export class MyGateway implements OnModuleInit {
 
       // Verificar se o jogador já escolheu uma carta nesta rodada
       if (!this.chosenCards[username]) {
-        this.chosenCards[username] = cardValue;
+        if (Object.values(this.chosenCards)) {
+          this.chosenCards[username] = data.card;
 
-        if (Object.keys(this.chosenCards).length === 2) {
-          this.resolveRound();
+          if (Object.keys(this.chosenCards).length === 2) {
+            this.resolveRound();
+          }
         }
       }
     }
@@ -196,6 +212,10 @@ export class MyGateway implements OnModuleInit {
         'availableCards',
         JSON.stringify(userLineupAvailableCards),
       );
+      playerClient.emit('currentTurn', {
+        turn: this.currentTurn,
+        currentStat: this.currentStat
+      });
 
       this.playerAcknowledgments[username] = true;
     }
@@ -219,30 +239,20 @@ export class MyGateway implements OnModuleInit {
     const card1 = this.chosenCards[player1];
     const card2 = this.chosenCards[player2];
 
+    // Salvar a carta como já utilizada
+    this.usedCards.push(card1.id);
+    this.usedCards.push(card2.id);
+
+    console.log(this.usedCards)
+
     let winner: string;
+    let usedCards: string[] = this.usedCards;
 
-    if (card1 > card2) {
-      winner = player1;
-      this.player1_score++;
+    winner = await this.checkRoundWinner(player1, player2, card1, card2, "pace")
 
-      if (player1 !== this.currentTurn) {
-        this.changeTurn();
-      }
-    } else {
-      if (card1 < card2) {
-        winner = player2;
-        this.player2_score++;
-
-        if (player2 !== this.currentTurn) {
-          this.changeTurn();
-        }
-      } else {
-        winner = 'draw';
-      }
-    }
-
-    const player1Score = this.player1_score
-    const player2Score = this.player2_score
+    const player1Score = this.player1_score;
+    const player2Score = this.player2_score;
+    console.log(`${player1Score} pontos (player1) | ${player2Score} pontos do player 2`)
 
     for (const username of allPlayers) {
       const playerClient = this.players[username];
@@ -253,21 +263,24 @@ export class MyGateway implements OnModuleInit {
         card1,
         card2,
         player1Score,
-        player2Score
+        player2Score,
+        usedCards,
       });
 
       this.playerAcknowledgments[username] = true;
     }
 
     if (this.allPlayersAcknowledged()) {
+      console.log("Todos receberam o emit e vai começar outro round")
       // Reinicie as escolhas de cartas para a próxima rodada
       this.chosenCards = {};
 
       // Inicie a próxima rodada
       if (this.roundCount < 11) {
+        this.currentStat = "free"
         await this.startRound();
       } else {
-        await this.resolveMatch();
+        this.resolveMatch();
       }
     }
   }
@@ -308,6 +321,8 @@ export class MyGateway implements OnModuleInit {
 
     const usernames = Object.keys(this.players);
 
+    console.log(usernames)
+
     const player1 = usernames[0];
     const player2 = usernames[1];
 
@@ -319,7 +334,10 @@ export class MyGateway implements OnModuleInit {
 
     for (const username of usernames) {
       const playerClient = this.players[username];
-      playerClient.emit('currentTurn', this.currentTurn);
+      playerClient.emit('currentTurn', {
+        turn: this.currentTurn,
+        currentStat: this.currentStat
+      });
 
       this.playerAcknowledgments[username] = true;
     }
@@ -345,6 +363,135 @@ export class MyGateway implements OnModuleInit {
     // Redefinir o objeto sem afetar o original
     for (const playerId of Object.keys(this.playerAcknowledgments)) {
       this.playerAcknowledgments[playerId] = false;
+    }
+  }
+
+  private async checkRoundWinner(player1: string, player2: string, card1: GeneratedCard, card2: GeneratedCard, stat: string) {
+    if (stat === "pace") {
+      if (card1.pace > card2.pace) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.pace < card2.pace) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
+    }
+    if (stat === "finalization") {
+      if (card1.pace > card2.pace) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.pace < card2.pace) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
+    }
+    if (stat === "pass") {
+      if (card1.finalization > card2.finalization) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.finalization < card2.finalization) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
+    }
+    if (stat === "drible") {
+      if (card1.drible > card2.drible) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.drible < card2.drible) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
+    }
+    if (stat === "defense") {
+      if (card1.defense > card2.defense) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.defense < card2.defense) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
+    }
+    if (stat === "physic") {
+      if (card1.physic > card2.physic) {
+        this.player1_score += 1;
+  
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.physic < card2.physic) {
+          this.player2_score += 1;
+  
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw'
+        }
+      }
     }
   }
 }
