@@ -1,4 +1,4 @@
-import { OnModuleInit } from '@nestjs/common';
+import { All, OnModuleInit } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -29,9 +29,11 @@ export class MyGateway implements OnModuleInit {
   private players: { [key: string]: Socket } = {};
   private chosenCards: { [key: string]: number } = {};
   private availableCardsPerPlayer: { [username: string]: Lineup } = {};
+  private currentTurn: string = '';
   private roundCount: number = 0;
   private player1_score: number = 0;
   private player2_score: number = 0;
+  private playerAcknowledgments: { [playerId: string]: boolean } = {};
 
   onModuleInit() {
     console.log('Iniciando Servidor...');
@@ -102,38 +104,67 @@ export class MyGateway implements OnModuleInit {
   // Logicas do Jogo
   @SubscribeMessage('joinGame')
   async handleJoinGame(client: Socket, data: JoinGameDto) {
+    this.playerAcknowledgments = {};
+
     // Verificar se o usuário já está conectado dentro do servidor
     if (this.players[data.username]) {
       console.log(`Usuário ${data.username} já está conectado.`);
+      return;
     }
 
     // Adicione o jogador à lista
     this.players[data.username] = client;
 
-    // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
+    // Obter a lista de todos os jogadores
     const allPlayers = Object.keys(this.players);
 
-    // Use Promise.all para esperar que todas as emissões sejam concluídas
-    await Promise.all(
-      allPlayers.map(async (username) => {
-        const playerClient = this.players[username];
+    // Gerar um índice aleatório
+    const indiceAleatorio = Math.floor(Math.random() * allPlayers.length);
 
-        // Use uma Promise para aguardar a conclusão da emissão
-        return new Promise(async () => {
-          playerClient.emit('gameJoined', {
-            players: allPlayers,
-            matchId: data.matchId,
-          });
-          if (Object.keys(this.players).length === 2) {
-            await this.startRound();
-          }
+    // Acessar o valor correspondente ao índice aleatório
+    const sortedUser = allPlayers[indiceAleatorio];
+    this.currentTurn = sortedUser;
+
+    console.log(`usuario sorteado: ${this.currentTurn}`);
+
+    if (this.currentTurn) {
+      // Emita o evento 'gameJoined' para todos os jogadores (incluindo o recém-conectado)
+      for (const username of allPlayers) {
+        const playerClient = this.players[username];
+        playerClient.emit('gameJoined', {
+          players: allPlayers,
+          matchId: data.matchId,
         });
-      }),
-    );
+        playerClient.emit('currentTurn', this.currentTurn);
+        this.playerAcknowledgments[username] = true;
+      }
+
+      // Iniciar a rodada se houver 2 jogadores
+      if (allPlayers.length === 2) {
+        if (this.allPlayersAcknowledged()) {
+          this.handleAllPlayersAcknowledged();
+
+          await this.startRound();
+        }
+      }
+    }
   }
 
   @SubscribeMessage('chooseCard')
-  handleChoosedCard(client: Socket, cardValue: number) {
+  async handleChoosedCard(client: Socket, cardValue: number) {
+    const allPlayers = Object.keys(this.players);
+
+    await this.changeTurn();
+
+    await Promise.all(
+      allPlayers.map(async (player) => {
+        await new Promise<void>((resolve) => {
+          this.broadcast('currentTurn', this.currentTurn);
+          resolve();
+        });
+      }),
+    );
+
     // Buscar o usuário através do SocketID
     const username = this.getUsernameBySocket(client);
 
@@ -148,7 +179,9 @@ export class MyGateway implements OnModuleInit {
   }
 
   private async startRound() {
-    // // Iniciar uma nova rodada, notificando os jogadores
+    this.resetPlayerAcknowledgments();
+
+    // Iniciar uma nova rodada, notificando os jogadores
     this.roundCount++;
     this.broadcast('startRound', this.roundCount);
 
@@ -159,18 +192,22 @@ export class MyGateway implements OnModuleInit {
 
     const allPlayers = Object.keys(this.players);
 
-    // Use Promise.all para esperar que todas as emissões sejam concluídas
-    await Promise.all(
-      allPlayers.map(async () => {
-        // Use uma Promise para aguardar a conclusão da emissão
-        return new Promise(async () => {
-          this.broadcast(
-            'availableCards',
-            JSON.stringify(userLineupAvailableCards),
-          );
-        });
-      }),
-    );
+    for (const username of allPlayers) {
+      const playerClient = this.players[username];
+      playerClient.emit(
+        'availableCards',
+        JSON.stringify(userLineupAvailableCards),
+      );
+
+      console.log('Adicinou alguem na lista');
+      this.playerAcknowledgments[username] = true;
+    }
+
+    console.log(this.playerAcknowledgments);
+
+    if (this.allPlayersAcknowledged()) {
+      console.log('Round começou para todos');
+    }
   }
 
   private resolveRound() {
@@ -185,22 +222,39 @@ export class MyGateway implements OnModuleInit {
     const card1 = this.chosenCards[player1];
     const card2 = this.chosenCards[player2];
 
+    const player1Score = this.player1_score;
+    const player2Score = this.player2_score;
+
     let winner: string;
 
     if (card1 > card2) {
       winner = player1;
       this.player1_score++;
+
+      if (player1 !== this.currentTurn) {
+        this.changeTurn();
+      }
     } else {
       if (card1 < card2) {
         winner = player2;
         this.player2_score++;
+
+        if (player2 !== this.currentTurn) {
+          this.changeTurn();
+        }
       } else {
         winner = 'draw';
       }
     }
 
     // Notificar os jogadores sobre o vencedor da rodada
-    this.broadcast('roundWinner', { winner, card1, card2 });
+    this.broadcast('roundWinner', {
+      winner,
+      card1,
+      card2,
+      player1Score,
+      player2Score,
+    });
 
     // Reinicie as escolhas de cartas para a próxima rodada
     this.chosenCards = {};
@@ -242,5 +296,56 @@ export class MyGateway implements OnModuleInit {
 
   private broadcast(event: string, data: any) {
     this.server.emit(event, data);
+  }
+
+  private async changeTurn() {
+    this.resetPlayerAcknowledgments();
+
+    const usernames = Object.keys(this.players);
+
+    const player1 = usernames[0];
+    const player2 = usernames[1];
+
+    if (this.currentTurn === player1) {
+      this.currentTurn = player2;
+    } else {
+      this.currentTurn = player1;
+    }
+
+    for (const username of usernames) {
+      const playerClient = this.players[username];
+      playerClient.emit('currentTurn', this.currentTurn);
+
+      this.playerAcknowledgments[username] = true;
+    }
+
+    if (this.allPlayersAcknowledged()) {
+      console.log('Trocando jogador da rodada');
+    } else {
+      console.log('Algum jogador não recebeu a mensagem');
+    }
+  }
+
+  // Checar se todos os usuários receberam a mensagem
+  private allPlayersAcknowledged(): boolean {
+    const playerIds = Object.keys(this.playerAcknowledgments);
+    return (
+      playerIds.length === 2 &&
+      playerIds.every((playerId) => this.playerAcknowledgments[playerId])
+    );
+  }
+
+  private handleAllPlayersAcknowledged(): void {
+    console.log('Todos jogadores receberam o emit');
+  }
+
+  private resetPlayerAcknowledgments(): void {
+    // Vai gerar uma cópia do objeto original antes de redefinir
+    this.playerAcknowledgments = { ...this.playerAcknowledgments };
+
+    // Redefinir o objeto sem afetar o original
+    for (const playerId of Object.keys(this.playerAcknowledgments)) {
+      this.playerAcknowledgments[playerId] = false;
+    }
   }
 }
