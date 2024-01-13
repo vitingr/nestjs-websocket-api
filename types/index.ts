@@ -1,3 +1,6 @@
+import { GeneratedBadge } from "./generated-badge/entities/generated-badge.entity";
+import { GeneratedCard } from "./generated-cards/entities/generated-card.entity";
+
 export interface PlayerCardProps {
   id: string;
   cardImage: string;

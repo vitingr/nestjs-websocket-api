@@ -4,6 +4,8 @@ import { GeneratedCard } from './entities/generated-card.entity';
 import { CreateGeneratedCardInput } from './dto/create-generated-card.input';
 import { UpdateGeneratedCardInput } from './dto/update-generated-card.input';
 import { SellCard } from './dto/sell-card';
+import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';import { PackResponse } from './entities/pack-response.entity';
+;
 
 @Resolver((of) => GeneratedCard)
 export class GeneratedCardsResolver {
@@ -49,44 +51,45 @@ export class GeneratedCardsResolver {
     return this.generatedCardsService.buyCard(sellCard);
   }
 
-  @Mutation((returns) => [GeneratedCard])
+  @Mutation((returns) => [PackResponse])
   openPlayersPack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openPlayersPack(id);
   }
 
-  @Mutation((returns) => [GeneratedCard])
+  @Mutation((returns) => [PackResponse])
   openRareGoldPack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openRareGoldPack(id);
   }
 
-  @Mutation((returns) => [GeneratedCard])
+  @Mutation((returns) => [PackResponse])
   openGoldPack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openGoldPack(id);
   }
 
+  @Mutation((returns) => [PackResponse])
   openRareSilverPack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openRareSilverPack(id);
   }
 
-  @Mutation((returns) => [GeneratedCard])
+  @Mutation((returns) => [PackResponse])
   openSilverPack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openSilverPack(id);
   }
 
-  @Mutation((returns) => [GeneratedCard])
+  @Mutation((returns) => [PackResponse])
   openBronzePack(
     @Args('id', { type: () => String }) id: string,
-  ): Promise<GeneratedCard[]> {
+  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openBronzePack(id);
   }
 }

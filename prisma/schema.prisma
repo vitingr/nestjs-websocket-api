@@ -13,7 +13,7 @@ model User {
   name                String
   firstname           String
   lastname            String
-  clubname            String                
+  clubname            String
   email               String                @unique
   password            String?
   currency            Float                 @default(500)
@@ -118,7 +118,6 @@ model Badge {
   id             String         @id @default(auto()) @map("_id") @db.ObjectId
   badgeImage     String
   clubname       String
-  type           String
   maxValue       Float          @default(5000)
   minValue       Float          @default(150)
   quickSellValue Float          @default(150)
@@ -126,15 +125,17 @@ model Badge {
 }
 
 model BadgeCreated {
-  id             String @id @default(auto()) @map("_id") @db.ObjectId
-  badgeId        String @db.ObjectId
-  ownerId        String @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  badgeId        String    @db.ObjectId
+  ownerId        String    @db.ObjectId
+  selling        Boolean   @default(false)
+  created        DateTime? @default(now())
+  price          Float?
   badgeImage     String
   clubname       String
-  type           String
-  maxValue       Float  @default(5000)
-  minValue       Float  @default(150)
-  quickSellValue Float  @default(150)
+  maxValue       Float     @default(5000)
+  minValue       Float     @default(150)
+  quickSellValue Float     @default(150)
 
   // Relations
   badge Badge @relation(fields: [badgeId], references: [id])

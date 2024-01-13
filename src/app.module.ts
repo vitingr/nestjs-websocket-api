@@ -11,6 +11,8 @@ import { GatewayModule } from './gateway/gateway.module';
 import { LineupsModule } from './lineups/lineups.module';
 import { GeneratedCardsModule } from './generated-cards/generated-cards.module';
 import { OnlineModeModule } from './online-mode/online-mode.module';
+import { BadgeModule } from './badge/badge.module';
+import { GeneratedBadgeModule } from './generated-badge/generated-badge.module';
 
 @Module({
   imports: [
@@ -23,7 +25,9 @@ import { OnlineModeModule } from './online-mode/online-mode.module';
     GatewayModule,
     LineupsModule,
     GeneratedCardsModule,
-    OnlineModeModule
+    OnlineModeModule,
+    BadgeModule,
+    GeneratedBadgeModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

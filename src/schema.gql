@@ -103,19 +103,72 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type PackResponse {
+  id: String
+  cardImage: String
+  owner: String
+  selling: Boolean
+  created: DateTime
+  price: Float
+  playerId: String
+  name: String
+  club: String
+  league: String
+  type: String
+  position: String
+  overall: Int
+  pace: Int
+  finalization: Int
+  pass: Int
+  drible: Int
+  defense: Int
+  physic: Int
+  minValue: Float
+  maxValue: Float
+  quickSellValue: Float
+  badgeId: String
+  ownerId: String
+  badgeImage: String
+  clubname: String
+}
+
+type Badge {
+  id: String!
+  badgeImage: String!
+  clubname: String!
+  maxValue: Float!
+  minValue: Float!
+  quickSellValue: Float!
+}
+
+type GeneratedBadge {
+  id: String!
+  badgeId: String!
+  ownerId: String!
+  selling: Boolean!
+  created: DateTime!
+  price: Float!
+  badgeImage: String!
+  clubname: String!
+  maxValue: Float!
+  minValue: Float!
+  quickSellValue: Float!
+}
+
 type Query {
   getUser(uuid: String!): User!
   getAllUsers: [User!]!
   getUserFriends(friends: [String!]!): [User!]!
   getUserPendingFriends(playersId: [String!]!): [User!]!
   findOneUser(id: String!): User!
-  findAll: [GeneratedCard!]!
-  findOne(id: String!): GeneratedCard!
+  findAll: [Badge!]!
+  findOne(id: String!): Badge!
   findLineup(id: String!): Lineup!
   getUserLineups(id: String!): [Lineup!]!
   findUserCurrentLineup(id: String!): Lineup!
   findUserCards(id: String!): [GeneratedCard!]!
   findSellingCards: [GeneratedCard!]!
+  generatedBadge(id: Int!): GeneratedBadge!
 }
 
 type Mutation {
@@ -133,11 +186,16 @@ type Mutation {
   createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
-  openPlayersPack(id: String!): [GeneratedCard!]!
-  openRareGoldPack(id: String!): [GeneratedCard!]!
-  openGoldPack(id: String!): [GeneratedCard!]!
-  openSilverPack(id: String!): [GeneratedCard!]!
-  openBronzePack(id: String!): [GeneratedCard!]!
+  openPlayersPack(id: String!): [PackResponse!]!
+  openRareGoldPack(id: String!): [PackResponse!]!
+  openGoldPack(id: String!): [PackResponse!]!
+  openRareSilverPack(id: String!): [PackResponse!]!
+  openSilverPack(id: String!): [PackResponse!]!
+  openBronzePack(id: String!): [PackResponse!]!
+  createBadge(createBadgeInput: CreateBadgeInput!): Badge!
+  createGeneratedBadge(createGeneratedBadgeInput: CreateGeneratedBadgeInput!): GeneratedBadge!
+  updateGeneratedBadge(updateGeneratedBadgeInput: UpdateGeneratedBadgeInput!): GeneratedBadge!
+  removeGeneratedBadge(id: Int!): GeneratedBadge!
 }
 
 input CreateUser {
@@ -221,4 +279,23 @@ input SellCard {
   newOwnerId: String!
   playerId: String!
   price: Float!
+}
+
+input CreateBadgeInput {
+  badgeImage: String!
+  clubname: String!
+  maxValue: Float!
+  minValue: Float!
+  quickSellValue: Float!
+}
+
+input CreateGeneratedBadgeInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateGeneratedBadgeInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
 }

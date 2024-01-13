@@ -286,23 +286,36 @@ export class MyGateway implements OnModuleInit {
   }
 
   private resolveMatch() {
-    const usernames = Object.keys(this.players);
+    this.resetPlayerAcknowledgments();
+
+    const allPlayers = Object.keys(this.players);
 
     // Players Data
-    const player1 = usernames[0];
-    const player2 = usernames[1];
+    const player1 = allPlayers[0];
+    const player2 = allPlayers[1];
 
-    if (this.player1_score > this.player2_score) {
-      this.broadcast('matchWinner', player1);
-      this.GatewayService.giveMatchPrize(player1, player2);
-    } else {
-      if (this.player2_score > this.player1_score) {
-        this.broadcast('matchWinner', player2);
-        this.GatewayService.giveMatchPrize(player2, player1);
+    for (const username of allPlayers) {
+
+      const playerClient = this.players[username];
+
+      if (this.player1_score > this.player2_score) {
+        playerClient.emit('matchWinner', player1);
+        this.GatewayService.giveMatchPrize(player1, player2);
       } else {
-        this.broadcast('matchWinner', 'Draw');
-        this.GatewayService.giveDrawPrize(player1, player2);
+        if (this.player2_score > this.player1_score) {
+          playerClient.emit('matchWinner', player2);
+          this.GatewayService.giveMatchPrize(player2, player1);
+        } else {
+          playerClient.emit('matchWinner', 'Draw');
+          this.GatewayService.giveDrawPrize(player1, player2);
+        }
       }
+
+      this.playerAcknowledgments[username] = true;
+    }
+
+    if (this.allPlayersAcknowledged()) {
+      console.log("Partida acabou")
     }
   }
 
