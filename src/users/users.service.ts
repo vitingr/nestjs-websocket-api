@@ -3,6 +3,7 @@ import { PrismaService } from 'src/database/prisma.service';
 import { User } from './entities/user-entity';
 import { CreateUser } from './dto/create-user';
 import { ChangeClubName } from './dto/change-club-name';
+import { ChangeClubBadge } from './dto/change-club-badge';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +36,7 @@ export class UsersService {
         },
       },
     });
-    return users
+    return users;
   }
 
   async getUserPendingFriends(playersId: string[]): Promise<User[]> {
@@ -53,65 +54,76 @@ export class UsersService {
   async changeClubName(data: ChangeClubName): Promise<User> {
     const updateUser = await this.prisma.user.update({
       where: {
-        id: data.userId
+        id: data.userId,
       },
       data: {
-        clubname: data.clubname
-      }
-    })
+        clubname: data.clubname,
+      },
+    });
 
-    return updateUser
+    return updateUser;
   }
 
   useMenuDriver(id: string): Promise<User> {
     return this.prisma.user.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        driverMenu: true
-      }
-    })
+        driverMenu: true,
+      },
+    });
   }
 
   useHomeDriver(id: string): Promise<User> {
     return this.prisma.user.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        driverHome: true
-      }
-    })
+        driverHome: true,
+      },
+    });
   }
 
   useLineupDriver(id: string): Promise<User> {
     return this.prisma.user.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        driverLineup: true
-      }
-    })
+        driverLineup: true,
+      },
+    });
   }
 
   useProfileDriver(id: string): Promise<User> {
     return this.prisma.user.update({
       where: {
-        id: id
+        id: id,
       },
       data: {
-        driverProfile: true
-      }
-    })
+        driverProfile: true,
+      },
+    });
   }
 
   findOneUser(id: string): Promise<User> {
     return this.prisma.user.findUnique({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
+  }
+
+  changeClubBadge(changeClubBadge: ChangeClubBadge): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: changeClubBadge.userId,
+      },
+      data: {
+        badge: changeClubBadge.clubBadge,
+      },
+    });
   }
 }

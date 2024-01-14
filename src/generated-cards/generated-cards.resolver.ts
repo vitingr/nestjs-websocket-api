@@ -4,9 +4,8 @@ import { GeneratedCard } from './entities/generated-card.entity';
 import { CreateGeneratedCardInput } from './dto/create-generated-card.input';
 import { UpdateGeneratedCardInput } from './dto/update-generated-card.input';
 import { SellCard } from './dto/sell-card';
-import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';import { PackResponse } from './entities/pack-response.entity';
-;
-
+import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
+import { PackResponse } from './entities/pack-response.entity';
 @Resolver((of) => GeneratedCard)
 export class GeneratedCardsResolver {
   constructor(private readonly generatedCardsService: GeneratedCardsService) {}

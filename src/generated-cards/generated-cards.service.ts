@@ -110,43 +110,47 @@ export class GeneratedCardsService {
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(2);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,
@@ -169,43 +173,47 @@ export class GeneratedCardsService {
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(2);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,
@@ -227,43 +235,47 @@ export class GeneratedCardsService {
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(2);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,
@@ -282,43 +294,47 @@ export class GeneratedCardsService {
       const AllCards = await this.getRandomCards(6, [68, 69, 70, 71, 72, 73]);
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(1);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,
@@ -340,43 +356,47 @@ export class GeneratedCardsService {
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(1);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,
@@ -398,43 +418,47 @@ export class GeneratedCardsService {
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
-      const GeneratedCard: GeneratedCard[] = cardDrop.map((card: Card, index: number) => ({
-        cardImage: card.cardImage,
-        owner: userId,
-        selling: false,
-        playerId: card.id,
-        name: card.name,
-        club: card.club,
-        league: card.league,
-        type: card.type,
-        position: card.position,
-        overall: card.overall,
-        pace: card.pace,
-        finalization: card.finalization,
-        pass: card.pass,
-        drible: card.drible,
-        defense: card.defense,
-        physic: card.physic,
-        minValue: card.minValue,
-        maxValue: card.maxValue,
-        quickSellValue: card.quickSellValue,
-      }));
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
 
       const generatedCards = await this.prisma.playerCardGenerated.createMany({
         data: GeneratedCard,
       });
 
       const allBadges = await this.getRandomBadges(1);
-      const GeneratedBadge: GeneratedBadge[] = allBadges.map((badge: Badge, index: number) => ({
-        badgeId: badge.id,
-        ownerId: userId,
-        selling: false,
-        badgeImage: badge.badgeImage,
-        clubname: badge.clubname,
-        maxValue: badge.maxValue,
-        minValue: badge.minValue,
-        quickSellValue: badge.quickSellValue,
-      }));
+      const GeneratedBadge: GeneratedBadge[] = allBadges.map(
+        (badge: Badge, index: number) => ({
+          badgeId: badge.id,
+          ownerId: userId,
+          selling: false,
+          badgeImage: badge.badgeImage,
+          clubname: badge.clubname,
+          maxValue: badge.maxValue,
+          minValue: badge.minValue,
+          quickSellValue: badge.quickSellValue,
+        }),
+      );
 
       const generatedBadge = await this.prisma.badgeCreated.createMany({
         data: GeneratedBadge,

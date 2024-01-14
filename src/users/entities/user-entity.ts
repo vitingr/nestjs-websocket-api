@@ -29,14 +29,8 @@ export class User {
   @Field((type) => Float)
   currency: number;
 
-  @Field((type) => [String])
-  cards: string[];
-
   @Field((type) => Int, { nullable: true })
   qtdCards: number;
-
-  @Field((type) => [String])
-  badges: string[];
 
   @Field({ nullable: true })
   badge: string;

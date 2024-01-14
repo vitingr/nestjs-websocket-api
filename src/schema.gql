@@ -12,9 +12,7 @@ type User {
   email: String!
   password: String
   currency: Float!
-  cards: [String!]!
   qtdCards: Int
-  badges: [String!]!
   badge: String
   friends: [String!]!
   qtdFriends: Int
@@ -147,7 +145,7 @@ type GeneratedBadge {
   ownerId: String!
   selling: Boolean!
   created: DateTime!
-  price: Float!
+  price: Float
   badgeImage: String!
   clubname: String!
   maxValue: Float!
@@ -161,13 +159,16 @@ type Query {
   getUserFriends(friends: [String!]!): [User!]!
   getUserPendingFriends(playersId: [String!]!): [User!]!
   findOneUser(id: String!): User!
-  findAll: [Badge!]!
-  findOne(id: String!): Badge!
+  findAll: [GeneratedBadge!]!
+  findOne(id: String!): GeneratedCard!
   findLineup(id: String!): Lineup!
   getUserLineups(id: String!): [Lineup!]!
   findUserCurrentLineup(id: String!): Lineup!
   findUserCards(id: String!): [GeneratedCard!]!
   findSellingCards: [GeneratedCard!]!
+  findUserBadge(id: String!): GeneratedBadge!
+  findUserBadges(id: String!): [GeneratedBadge!]!
+  findSellingBadges: [GeneratedBadge!]!
   generatedBadge(id: Int!): GeneratedBadge!
 }
 
@@ -178,6 +179,7 @@ type Mutation {
   useHomeDriver(id: String!): User!
   useLineupDriver(id: String!): User!
   useProfileDriver(id: String!): User!
+  changeClubBadge(changeClubBadge: ChangeClubBadge!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
   deleteUserLineup(id: String!): Lineup!
@@ -193,6 +195,8 @@ type Mutation {
   openSilverPack(id: String!): [PackResponse!]!
   openBronzePack(id: String!): [PackResponse!]!
   createBadge(createBadgeInput: CreateBadgeInput!): Badge!
+  sellBadge(sellBadge: SellBadge!): GeneratedBadge!
+  buyBadge(buyBadge: BuyBadge!): GeneratedBadge!
   createGeneratedBadge(createGeneratedBadgeInput: CreateGeneratedBadgeInput!): GeneratedBadge!
   updateGeneratedBadge(updateGeneratedBadgeInput: UpdateGeneratedBadgeInput!): GeneratedBadge!
   removeGeneratedBadge(id: Int!): GeneratedBadge!
@@ -211,6 +215,11 @@ input CreateUser {
 input ChangeClubName {
   userId: String!
   clubname: String!
+}
+
+input ChangeClubBadge {
+  userId: String!
+  clubBadge: String!
 }
 
 input CreateCardInput {
@@ -287,6 +296,18 @@ input CreateBadgeInput {
   maxValue: Float!
   minValue: Float!
   quickSellValue: Float!
+}
+
+input SellBadge {
+  id: String!
+  price: Float!
+}
+
+input BuyBadge {
+  id: String!
+  ownerId: String!
+  newOwnerId: String!
+  price: Float!
 }
 
 input CreateGeneratedBadgeInput {

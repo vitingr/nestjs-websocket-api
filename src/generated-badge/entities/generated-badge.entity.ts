@@ -11,13 +11,13 @@ export class GeneratedBadge {
   @Field()
   ownerId: string;
 
-  @Field()
+  @Field((type) => Boolean)
   selling: boolean;
 
-  @Field()
+  @Field((type) => Date)
   created: Date;
 
-  @Field((type) => Float)
+  @Field((type) => Float, { nullable: true })
   price: number;
 
   @Field()

@@ -17,9 +17,7 @@ model User {
   email               String                @unique
   password            String?
   currency            Float                 @default(500)
-  cards               String[]
   qtdCards            Int?                  @default(0)
-  badges              String[]
   badge               String?               @default("")
   friends             String[]
   qtdFriends          Int?                  @default(0)

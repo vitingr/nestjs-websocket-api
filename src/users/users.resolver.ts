@@ -4,6 +4,7 @@ import { UsersService } from './users.service';
 import { CreateUser } from './dto/create-user';
 import { SendFriendInvite } from './dto/send-invite';
 import { ChangeClubName } from './dto/change-club-name';
+import { ChangeClubBadge } from './dto/change-club-badge';
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -72,5 +73,12 @@ export class UsersResolver {
   @Query((returns) => User)
   findOneUser(@Args('id', { type: () => String }) id: string): Promise<User> {
     return this.userService.findOneUser(id);
+  }
+
+  @Mutation((returns) => User)
+  changeClubBadge(
+    @Args('changeClubBadge') changeClubBadge: ChangeClubBadge,
+  ): Promise<User> {
+    return this.userService.changeClubBadge(changeClubBadge);
   }
 }
