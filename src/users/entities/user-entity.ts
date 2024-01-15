@@ -35,6 +35,9 @@ export class User {
   @Field({ nullable: true })
   badge: string;
 
+  @Field({ nullable: true })
+  badgeImage: string
+
   @Field((type) => [String])
   friends: string[];
 

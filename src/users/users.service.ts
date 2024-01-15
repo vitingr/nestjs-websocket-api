@@ -18,7 +18,9 @@ export class UsersService {
   }
 
   findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return this.prisma.user.findMany({orderBy: {
+      points: 'desc'
+    }});
   }
 
   createUser(data: CreateUser): Promise<User> {
@@ -123,6 +125,7 @@ export class UsersService {
       },
       data: {
         badge: changeClubBadge.clubBadge,
+        badgeImage: changeClubBadge.badgeImage
       },
     });
   }

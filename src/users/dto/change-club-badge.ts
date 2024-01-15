@@ -10,4 +10,8 @@ export class ChangeClubBadge {
   @IsAlpha()
   @Field()
   clubBadge: string;
+
+  @IsAlpha()
+  @Field()
+  badgeImage: string
 }

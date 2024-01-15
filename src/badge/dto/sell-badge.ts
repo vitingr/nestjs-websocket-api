@@ -10,4 +10,7 @@ export class SellBadge {
   @Field((type) => Float)
   price: number;
 
+  @Field()
+  @IsAlpha()
+  ownerId: string;
 }

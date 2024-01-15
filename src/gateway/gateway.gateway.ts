@@ -29,7 +29,7 @@ export class MyGateway implements OnModuleInit {
 
   private players: { [key: string]: Socket } = {};
   private chosenCards: { [key: string]: GeneratedCard } = {};
-  private currentStat: string = "free";
+  private currentStat: string = 'free';
   private usedCards: string[] = [];
   private availableCardsPerPlayer: { [username: string]: Lineup } = {};
   private currentTurn: string = '';
@@ -138,7 +138,7 @@ export class MyGateway implements OnModuleInit {
         });
         playerClient.emit('currentTurn', {
           turn: this.currentTurn,
-          currentStat: this.currentStat
+          currentStat: this.currentStat,
         });
         this.playerAcknowledgments[username] = true;
       }
@@ -159,7 +159,7 @@ export class MyGateway implements OnModuleInit {
   ) {
     this.resetPlayerAcknowledgments();
 
-    this.currentStat = data.stat
+    this.currentStat = data.stat;
 
     const allPlayers = Object.keys(this.players);
 
@@ -170,7 +170,7 @@ export class MyGateway implements OnModuleInit {
 
       playerClient.emit('currentTurn', {
         turn: this.currentTurn,
-        currentStat: data.stat
+        currentStat: data.stat,
       });
       this.playerAcknowledgments[username] = true;
     }
@@ -214,7 +214,7 @@ export class MyGateway implements OnModuleInit {
       );
       playerClient.emit('currentTurn', {
         turn: this.currentTurn,
-        currentStat: this.currentStat
+        currentStat: this.currentStat,
       });
 
       this.playerAcknowledgments[username] = true;
@@ -231,6 +231,8 @@ export class MyGateway implements OnModuleInit {
     // Comparar se as cartas escolhidas e determine o vencedor da rodada
     const allPlayers = Object.keys(this.chosenCards);
 
+
+
     // Players Data
     const player1 = allPlayers[0];
     const player2 = allPlayers[1];
@@ -243,16 +245,19 @@ export class MyGateway implements OnModuleInit {
     this.usedCards.push(card1.id);
     this.usedCards.push(card2.id);
 
-    console.log(this.usedCards)
-
     let winner: string;
     let usedCards: string[] = this.usedCards;
 
-    winner = await this.checkRoundWinner(player1, player2, card1, card2, "pace")
+    winner = await this.checkRoundWinner(
+      player1,
+      player2,
+      card1,
+      card2,
+      this.currentStat,
+    );
 
     const player1Score = this.player1_score;
     const player2Score = this.player2_score;
-    console.log(`${player1Score} pontos (player1) | ${player2Score} pontos do player 2`)
 
     for (const username of allPlayers) {
       const playerClient = this.players[username];
@@ -271,13 +276,12 @@ export class MyGateway implements OnModuleInit {
     }
 
     if (this.allPlayersAcknowledged()) {
-      console.log("Todos receberam o emit e vai começar outro round")
       // Reinicie as escolhas de cartas para a próxima rodada
       this.chosenCards = {};
 
       // Inicie a próxima rodada
       if (this.roundCount < 11) {
-        this.currentStat = "free"
+        this.currentStat = 'free';
         await this.startRound();
       } else {
         this.resolveMatch();
@@ -294,19 +298,29 @@ export class MyGateway implements OnModuleInit {
     const player1 = allPlayers[0];
     const player2 = allPlayers[1];
 
-    for (const username of allPlayers) {
+    console.log(player1)
 
+    for (const username of allPlayers) {
       const playerClient = this.players[username];
 
       if (this.player1_score > this.player2_score) {
-        playerClient.emit('matchWinner', player1);
+        playerClient.emit('matchWinner', {
+          winner: player1,
+          loser: player2,
+        });
         this.GatewayService.giveMatchPrize(player1, player2);
       } else {
         if (this.player2_score > this.player1_score) {
-          playerClient.emit('matchWinner', player2);
+          playerClient.emit('matchWinner', {
+            winner: player2,
+            loser: player1,
+          });
           this.GatewayService.giveMatchPrize(player2, player1);
         } else {
-          playerClient.emit('matchWinner', 'Draw');
+          playerClient.emit('matchWinner', {
+            winner: 'draw',
+            loser: 'draw',
+          });
           this.GatewayService.giveDrawPrize(player1, player2);
         }
       }
@@ -315,7 +329,7 @@ export class MyGateway implements OnModuleInit {
     }
 
     if (this.allPlayersAcknowledged()) {
-      console.log("Partida acabou")
+      console.log('Partida acabou');
     }
   }
 
@@ -334,8 +348,6 @@ export class MyGateway implements OnModuleInit {
 
     const usernames = Object.keys(this.players);
 
-    console.log(usernames)
-
     const player1 = usernames[0];
     const player2 = usernames[1];
 
@@ -349,7 +361,7 @@ export class MyGateway implements OnModuleInit {
       const playerClient = this.players[username];
       playerClient.emit('currentTurn', {
         turn: this.currentTurn,
-        currentStat: this.currentStat
+        currentStat: this.currentStat,
       });
 
       this.playerAcknowledgments[username] = true;
@@ -379,11 +391,17 @@ export class MyGateway implements OnModuleInit {
     }
   }
 
-  private async checkRoundWinner(player1: string, player2: string, card1: GeneratedCard, card2: GeneratedCard, stat: string) {
-    if (stat === "pace") {
+  private async checkRoundWinner(
+    player1: string,
+    player2: string,
+    card1: GeneratedCard,
+    card2: GeneratedCard,
+    stat: string,
+  ) {
+    if (stat === 'pace') {
       if (card1.pace > card2.pace) {
         this.player1_score += 1;
-  
+
         if (player1 !== this.currentTurn) {
           this.changeTurn();
         }
@@ -391,41 +409,20 @@ export class MyGateway implements OnModuleInit {
       } else {
         if (card1.pace < card2.pace) {
           this.player2_score += 1;
-  
+
           if (player2 !== this.currentTurn) {
             this.changeTurn();
           }
           return player2;
         } else {
-          return 'draw'
+          return 'draw';
         }
       }
     }
-    if (stat === "finalization") {
-      if (card1.pace > card2.pace) {
-        this.player1_score += 1;
-  
-        if (player1 !== this.currentTurn) {
-          this.changeTurn();
-        }
-        return player1;
-      } else {
-        if (card1.pace < card2.pace) {
-          this.player2_score += 1;
-  
-          if (player2 !== this.currentTurn) {
-            this.changeTurn();
-          }
-          return player2;
-        } else {
-          return 'draw'
-        }
-      }
-    }
-    if (stat === "pass") {
+    if (stat === 'finalization') {
       if (card1.finalization > card2.finalization) {
         this.player1_score += 1;
-  
+
         if (player1 !== this.currentTurn) {
           this.changeTurn();
         }
@@ -433,20 +430,41 @@ export class MyGateway implements OnModuleInit {
       } else {
         if (card1.finalization < card2.finalization) {
           this.player2_score += 1;
-  
+
           if (player2 !== this.currentTurn) {
             this.changeTurn();
           }
           return player2;
         } else {
-          return 'draw'
+          return 'draw';
         }
       }
     }
-    if (stat === "drible") {
+    if (stat === 'pass') {
+      if (card1.pass > card2.pass) {
+        this.player1_score += 1;
+
+        if (player1 !== this.currentTurn) {
+          this.changeTurn();
+        }
+        return player1;
+      } else {
+        if (card1.pass < card2.pass) {
+          this.player2_score += 1;
+
+          if (player2 !== this.currentTurn) {
+            this.changeTurn();
+          }
+          return player2;
+        } else {
+          return 'draw';
+        }
+      }
+    }
+    if (stat === 'drible') {
       if (card1.drible > card2.drible) {
         this.player1_score += 1;
-  
+
         if (player1 !== this.currentTurn) {
           this.changeTurn();
         }
@@ -454,20 +472,20 @@ export class MyGateway implements OnModuleInit {
       } else {
         if (card1.drible < card2.drible) {
           this.player2_score += 1;
-  
+
           if (player2 !== this.currentTurn) {
             this.changeTurn();
           }
           return player2;
         } else {
-          return 'draw'
+          return 'draw';
         }
       }
     }
-    if (stat === "defense") {
+    if (stat === 'defense') {
       if (card1.defense > card2.defense) {
         this.player1_score += 1;
-  
+
         if (player1 !== this.currentTurn) {
           this.changeTurn();
         }
@@ -475,20 +493,20 @@ export class MyGateway implements OnModuleInit {
       } else {
         if (card1.defense < card2.defense) {
           this.player2_score += 1;
-  
+
           if (player2 !== this.currentTurn) {
             this.changeTurn();
           }
           return player2;
         } else {
-          return 'draw'
+          return 'draw';
         }
       }
     }
-    if (stat === "physic") {
+    if (stat === 'physic') {
       if (card1.physic > card2.physic) {
         this.player1_score += 1;
-  
+
         if (player1 !== this.currentTurn) {
           this.changeTurn();
         }
@@ -496,13 +514,13 @@ export class MyGateway implements OnModuleInit {
       } else {
         if (card1.physic < card2.physic) {
           this.player2_score += 1;
-  
+
           if (player2 !== this.currentTurn) {
             this.changeTurn();
           }
           return player2;
         } else {
-          return 'draw'
+          return 'draw';
         }
       }
     }

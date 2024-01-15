@@ -29,7 +29,7 @@ export class BadgeResolver {
   ): Promise<Badge> {
     return this.badgeService.findOne(id);
   }
-
+ 
   @Query((returns) => [GeneratedBadge])
   findUserBadges(
     @Args('id', { type: () => String }) id: string,

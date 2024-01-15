@@ -34,7 +34,7 @@ export class BadgeService {
     return this.prisma.badgeCreated.findMany({
       where: {
         ownerId: id,
-        selling: false
+        selling: false,
       },
       orderBy: {
         clubname: 'asc',
@@ -42,7 +42,25 @@ export class BadgeService {
     });
   }
 
-  sellBadge(data: SellBadge): Promise<GeneratedBadge> {
+  async sellBadge(data: SellBadge): Promise<GeneratedBadge> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: data.ownerId,
+      },
+    });
+
+    if (user.badge === data.id) {
+      await this.prisma.user.update({
+        where: {
+          id: data.ownerId,
+        },
+        data: {
+          badge: '',
+          badgeImage: '/assets/undefinedTeam.png',
+        },
+      });
+    }
+
     return this.prisma.badgeCreated.update({
       where: {
         id: data.id,
@@ -50,7 +68,7 @@ export class BadgeService {
       data: {
         selling: true,
         price: data.price,
-      }, 
+      },
     });
   }
 

@@ -141,6 +141,8 @@ export class GatewayService {
       },
     });
 
+    console.log(usersAvaliable)
+
     if (usersAvaliable.length > 0) {
       // Já possuem usuários buscando partidas
       let choosedUser =
@@ -237,12 +239,18 @@ export class GatewayService {
   }
 
   async giveMatchPrize(winner: string, loser: string): Promise<User> {
-    console.log(`winner ${winner} || loser ${loser}`)
+    const userLoser = await this.prisma.user.findUnique({
+      where: {
+        id: loser,
+      },
+    });
+
     const winnerUpdated = await this.prisma.user.update({
       where: {
         id: winner,
       },
       data: {
+        searchingMatch: false,
         currency: {
           increment: 500,
         },
@@ -252,31 +260,33 @@ export class GatewayService {
       },
     });
 
-    const loserUpdated = await this.prisma.user.update({
-      where: {
-        id: loser,
-      },
-      data: {
-        currency: {
-          increment: 250,
+    if (userLoser.points > 0) {
+      const loserUpdated = await this.prisma.user.update({
+        where: {
+          id: loser,
         },
-        points: {
-          decrement: 50,
+        data: {
+          searchingMatch: false,
+          currency: {
+            increment: 250,
+          },
+          points: {
+            decrement: 50,
+          },
         },
-      },
-    });
+      });
+    }
 
     return winnerUpdated;
   }
 
   async giveDrawPrize(player1: string, player2: string): Promise<User> {
-    console.log(`player1 ${player1} || player2 ${player2}`)
-
     const player1Updated = await this.prisma.user.update({
       where: {
         id: player1,
       },
       data: {
+        searchingMatch: false,
         currency: {
           increment: 325,
         },
@@ -288,6 +298,7 @@ export class GatewayService {
         id: player2,
       },
       data: {
+        searchingMatch: false,
         currency: {
           increment: 325,
         },
@@ -298,31 +309,30 @@ export class GatewayService {
   }
 
   async getUserAvailableCards(usersId: string[]): Promise<Lineup[]> {
-
     const user1 = await this.prisma.user.findUnique({
       where: {
-        id: usersId[0]
-      }
-    })
+        id: usersId[0],
+      },
+    });
 
     const user2 = await this.prisma.user.findUnique({
       where: {
-        id: usersId[1]
-      }
-    })    
+        id: usersId[1],
+      },
+    });
 
     const user1Lineup = await this.prisma.lineup.findUnique({
       where: {
-        id: user1.currentLineup
-      }
-    })
+        id: user1.currentLineup,
+      },
+    });
 
     const user2Lineup = await this.prisma.lineup.findUnique({
       where: {
-        id: user2.currentLineup
-      }
-    })
+        id: user2.currentLineup,
+      },
+    });
 
-    return [user1Lineup, user2Lineup]
+    return [user1Lineup, user2Lineup];
   }
 }
