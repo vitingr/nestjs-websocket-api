@@ -134,14 +134,24 @@ export class GatewayService {
     return userUpdated;
   }
 
+  async stopSearchingMatch(body: SearchMatch) {
+    const userUpdated = await this.prisma.user.update({
+      where: {
+        id: body.id
+      },
+      data: {
+        searchingMatch: false
+      }
+    })
+    return userUpdated
+  }
+
   async searchMatch(body: SearchMatch) {
     const usersAvaliable = await this.prisma.user.findMany({
       where: {
         searchingMatch: true,
       },
     });
-
-    console.log(usersAvaliable)
 
     if (usersAvaliable.length > 0) {
       // Já possuem usuários buscando partidas
@@ -251,6 +261,9 @@ export class GatewayService {
       },
       data: {
         searchingMatch: false,
+        victories: {
+          increment: 1
+        },
         currency: {
           increment: 500,
         },
@@ -270,6 +283,9 @@ export class GatewayService {
           currency: {
             increment: 250,
           },
+          loses: {
+            increment: 1
+          },
           points: {
             decrement: 50,
           },
@@ -287,6 +303,9 @@ export class GatewayService {
       },
       data: {
         searchingMatch: false,
+        draws: {
+          increment: 1
+        },
         currency: {
           increment: 325,
         },
@@ -299,6 +318,9 @@ export class GatewayService {
       },
       data: {
         searchingMatch: false,
+        draws: {
+          increment: 1
+        },
         currency: {
           increment: 325,
         },

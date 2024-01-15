@@ -63,6 +63,11 @@ export class MyGateway implements OnModuleInit {
     return this.GatewayService.removeFriend(body);
   }
 
+  @SubscribeMessage('stopSearchingMatch')
+  async stopSearchingMatch(@MessageBody() body: SearchMatch): Promise<User> {
+    return this.GatewayService.stopSearchingMatch(body)
+  }
+
   @SubscribeMessage('searchMatch')
   async searchMatch(@MessageBody() body: SearchMatch) {
     // Pegar os dados do usuário para a criação de uma nova partida
@@ -219,27 +224,21 @@ export class MyGateway implements OnModuleInit {
 
       this.playerAcknowledgments[username] = true;
     }
-
-    if (this.allPlayersAcknowledged()) {
-      console.log('Round começou para todos');
-    }
   }
 
   private async resolveRound() {
     this.resetPlayerAcknowledgments();
 
     // Comparar se as cartas escolhidas e determine o vencedor da rodada
-    const allPlayers = Object.keys(this.chosenCards);
-
-
+    const allPlayers = Object.keys(this.chosenCards).sort();
 
     // Players Data
     const player1 = allPlayers[0];
     const player2 = allPlayers[1];
 
     // Carta escolhida pelo usuário durante a rodada
-    const card1 = this.chosenCards[player1];
-    const card2 = this.chosenCards[player2];
+    const card1 = this.chosenCards[allPlayers[0]];
+    const card2 = this.chosenCards[allPlayers[1]];
 
     // Salvar a carta como já utilizada
     this.usedCards.push(card1.id);
@@ -297,8 +296,6 @@ export class MyGateway implements OnModuleInit {
     // Players Data
     const player1 = allPlayers[0];
     const player2 = allPlayers[1];
-
-    console.log(player1)
 
     for (const username of allPlayers) {
       const playerClient = this.players[username];
@@ -366,10 +363,6 @@ export class MyGateway implements OnModuleInit {
 
       this.playerAcknowledgments[username] = true;
     }
-
-    if (this.allPlayersAcknowledged()) {
-      console.log('Trocando jogador da rodada');
-    }
   }
 
   // Checar se todos os usuários receberam a mensagem
@@ -398,6 +391,7 @@ export class MyGateway implements OnModuleInit {
     card2: GeneratedCard,
     stat: string,
   ) {
+
     if (stat === 'pace') {
       if (card1.pace > card2.pace) {
         this.player1_score += 1;
