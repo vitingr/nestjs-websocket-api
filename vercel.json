@@ -7,7 +7,7 @@
       "config": { 
         "maxLambdaSize": "2048MB",
         "includeFiles": [
-          "dist/schemas/**/*.graphql"
+          "dist/src/**/*.graphql"
         ]
       }
     }
