@@ -2,12 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "dist/src/main.js",
+      "src": "dist/main.js",
       "use": "@vercel/node",
       "config": { 
         "maxLambdaSize": "2048MB",
         "includeFiles": [
-          "dist/src/**/*.graphql"
+          "dist/**/*.graphql"
         ]
       }
     }
@@ -15,7 +15,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "dist/src/main.js"
+      "dest": "dist/main.js"
     }
   ]
 }
