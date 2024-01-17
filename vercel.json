@@ -9,10 +9,7 @@
         "includeFiles": [
           "dist/**/*.graphql"
         ]
-      }
-    },
-    {
-      "rewrites": [{ "source": "/(.*)", "destination": "/api" }]
+     }
     }
   ],
   "routes": [
