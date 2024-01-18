@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/graphql')
+  getGraphQlHello(): string {
+    return 'GraphQL Server is running!';
+  }
 }

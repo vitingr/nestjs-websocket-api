@@ -21,13 +21,6 @@ import { GeneratedBadgeModule } from './generated-badge/generated-badge.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       csrfPrevention: false,
-      // context: ({ req }) => ({
-      //   req,
-      //   cors: {
-      //     origin: '*', // Permitir qualquer origem
-      //     credentials: true,
-      //   },
-      // }),
     }),
     UsersModule,
     CardsModule,
