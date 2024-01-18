@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { GatewayService } from './gateway.service';
 import { SendFriendInvite } from 'src/users/dto/send-invite';
 import { User } from 'src/users/entities/user-entity';
-import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
+import { AcceptMatchModeDto } from './dto/accept-match.dto'; 
 import { SearchMatch } from './dto/search-match.dto';
 import { JoinGameDto } from './dto/join-game.dto';
 import { Lineup } from '@prisma/client';
@@ -18,7 +18,7 @@ import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entit
 
 @WebSocketGateway({
   cors: {
-    origin: ['http://localhost:3000'],
+    origin: ['https://pifa-24.vercel.app/', "https://pifa-24.vercel.app"],
   },
 })
 export class MyGateway implements OnModuleInit {
