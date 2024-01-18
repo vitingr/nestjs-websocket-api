@@ -14,18 +14,20 @@ import { OnlineModeModule } from './online-mode/online-mode.module';
 import { BadgeModule } from './badge/badge.module';
 import { GeneratedBadgeModule } from './generated-badge/generated-badge.module';
 
+
 @Module({
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      context: ({ req }) => ({
-        req,
-        cors: {
-          origin: '*', // Permitir qualquer origem
-          credentials: true,
-        },
-      }),
+      csrfPrevention: false,
+      // context: ({ req }) => ({
+      //   req,
+      //   cors: {
+      //     origin: '*', // Permitir qualquer origem
+      //     credentials: true,
+      //   },
+      // }),
     }),
     UsersModule,
     CardsModule,
