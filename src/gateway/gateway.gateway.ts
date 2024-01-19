@@ -16,9 +16,10 @@ import { JoinGameDto } from './dto/join-game.dto';
 import { Lineup } from '@prisma/client';
 import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
 
+
 @WebSocketGateway({
   cors: {
-    origin: ['https://pifa-24.vercel.app/', "https://pifa-24.vercel.app"],
+    origin: ['https://pifa-24.vercel.app/', "https://pifa-24.vercel.app", "http://localhost:3000/"]
   },
 })
 export class MyGateway implements OnModuleInit {

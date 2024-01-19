@@ -1,6 +1,6 @@
 import { Body, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { AcceptMatchModeDto } from 'src/online-mode/dto/accept-match.dto';
+import { AcceptMatchModeDto } from './dto/accept-match.dto';
 import { SendFriendInvite } from 'src/users/dto/send-invite';
 import { User } from 'src/users/entities/user-entity';
 import { SearchMatch } from './dto/search-match.dto';
