@@ -19,7 +19,7 @@ import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entit
 
 @WebSocketGateway({
   cors: {
-    origin: ['https://pifa-24.vercel.app/', "https://pifa-24.vercel.app", "http://localhost:3000/"]
+    origin: '*'
   },
 })
 export class MyGateway implements OnModuleInit {
