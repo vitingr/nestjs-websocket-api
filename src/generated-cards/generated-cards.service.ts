@@ -340,6 +340,8 @@ export class GeneratedCardsService {
         data: GeneratedBadge,
       });
 
+      console.log(...GeneratedCard)
+
       return [...GeneratedCard, ...GeneratedBadge];
     } else {
       return 'Dinheiro insuficiente';
