@@ -165,6 +165,24 @@ export class GatewayService {
         },
       });
 
+      await this.prisma.user.update({
+        where: {
+          id: body.id
+        },
+        data: {
+          searchingMatch: false
+        }
+      })
+
+      await this.prisma.user.update({
+        where: {
+          id: choosedUser.id
+        },
+        data: {
+          searchingMatch: false
+        }
+      })
+
       return [choosedUser, newMatch];
     } else {
       // Não existe nenhum usuário já buscando alguma partida
@@ -260,7 +278,6 @@ export class GatewayService {
         id: winner,
       },
       data: {
-        searchingMatch: false,
         victories: {
           increment: 1
         },
@@ -279,7 +296,6 @@ export class GatewayService {
           id: loser,
         },
         data: {
-          searchingMatch: false,
           currency: {
             increment: 250,
           },
@@ -302,7 +318,6 @@ export class GatewayService {
         id: player1,
       },
       data: {
-        searchingMatch: false,
         draws: {
           increment: 1
         },
@@ -317,7 +332,6 @@ export class GatewayService {
         id: player2,
       },
       data: {
-        searchingMatch: false,
         draws: {
           increment: 1
         },

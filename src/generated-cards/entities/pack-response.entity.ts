@@ -81,9 +81,10 @@ export class PackResponse {
 
   @Field({ nullable: true })
   clubname: string;
-  // @Field((type) => [GeneratedCard], {nullable: true})
-  // GeneratedCard: GeneratedCard[]
+  
+  @Field((type) => [GeneratedCard], {nullable: true})
+  GeneratedCard: GeneratedCard[]
 
-  // @Field((type) => [GeneratedBadge], {nullable: true})
-  // GeneratedBadge: GeneratedBadge[]
+  @Field((type) => [GeneratedBadge], {nullable: true})
+  GeneratedBadge: GeneratedBadge[]
 }
