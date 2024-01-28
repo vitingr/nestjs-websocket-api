@@ -6,6 +6,9 @@ import { UpdateGeneratedCardInput } from './dto/update-generated-card.input';
 import { SellCard } from './dto/sell-card';
 import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
 import { PackResponse } from './entities/pack-response.entity';
+import { QuickSellProps } from './dto/quick-sell';
+import { User } from 'src/users/entities/user-entity';
+
 @Resolver((of) => GeneratedCard)
 export class GeneratedCardsResolver {
   constructor(private readonly generatedCardsService: GeneratedCardsService) {}
@@ -90,5 +93,12 @@ export class GeneratedCardsResolver {
     @Args('id', { type: () => String }) id: string,
   ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
     return this.generatedCardsService.openBronzePack(id);
+  }
+
+  @Mutation((returns) => User)
+  quickSellCard(
+    @Args('quickSellCard') quickSellCard: QuickSellProps,
+  ): Promise<User> {
+    return this.generatedCardsService.quickSellCard(quickSellCard);
   }
 }

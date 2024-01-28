@@ -102,6 +102,20 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type GeneratedBadge {
+  id: String!
+  badgeId: String!
+  ownerId: String!
+  selling: Boolean!
+  created: DateTime!
+  price: Float
+  badgeImage: String!
+  clubname: String!
+  maxValue: Float!
+  minValue: Float!
+  quickSellValue: Float!
+}
+
 type PackResponse {
   id: String
   cardImage: String
@@ -129,24 +143,12 @@ type PackResponse {
   ownerId: String
   badgeImage: String
   clubname: String
+  GeneratedCard: [GeneratedCard!]
+  GeneratedBadge: [GeneratedBadge!]
 }
 
 type Badge {
   id: String!
-  badgeImage: String!
-  clubname: String!
-  maxValue: Float!
-  minValue: Float!
-  quickSellValue: Float!
-}
-
-type GeneratedBadge {
-  id: String!
-  badgeId: String!
-  ownerId: String!
-  selling: Boolean!
-  created: DateTime!
-  price: Float
   badgeImage: String!
   clubname: String!
   maxValue: Float!
@@ -195,6 +197,7 @@ type Mutation {
   openRareSilverPack(id: String!): [PackResponse!]!
   openSilverPack(id: String!): [PackResponse!]!
   openBronzePack(id: String!): [PackResponse!]!
+  quickSellCard(quickSellCard: QuickSellProps!): User!
   createBadge(createBadgeInput: CreateBadgeInput!): Badge!
   sellBadge(sellBadge: SellBadge!): GeneratedBadge!
   buyBadge(buyBadge: BuyBadge!): GeneratedBadge!
@@ -289,6 +292,12 @@ input SellCard {
   ownerId: String!
   newOwnerId: String!
   playerId: String!
+  price: Float!
+}
+
+input QuickSellProps {
+  ownerId: String!
+  cardId: String!
   price: Float!
 }
 

@@ -16,10 +16,10 @@ import { JoinGameDto } from './dto/join-game.dto';
 import { Lineup } from '@prisma/client';
 import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
 
-
 @WebSocketGateway({
   cors: {
-    origin: ['https://pifa-24.vercel.app', 'http://localhost:3000/'],
+    // origin: ['https://pifa-24.vercel.app', 'http://localhost:3000/'],
+    origin: "*",
     methods: ['GET', 'POST'],
     credentials: true,
   },
@@ -269,6 +269,8 @@ export class MyGateway implements OnModuleInit {
         winner,
         card1,
         card2,
+        player1,
+        player2,
         player1Score,
         player2Score,
         usedCards,
@@ -330,6 +332,17 @@ export class MyGateway implements OnModuleInit {
 
     if (this.allPlayersAcknowledged()) {
       console.log('Partida acabou');
+
+     this.players = {};
+      this.chosenCards = {};
+      this.currentStat = 'free';
+      this.usedCards = [];
+      this.availableCardsPerPlayer = {};
+      this.currentTurn = '';
+      this.roundCount = 0;
+      this.player1_score = 0;
+      this.player2_score = 0;
+      this.playerAcknowledgments = {};
     }
   }
 
