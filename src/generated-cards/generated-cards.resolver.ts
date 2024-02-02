@@ -8,6 +8,8 @@ import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.ent
 import { PackResponse } from './entities/pack-response.entity';
 import { QuickSellProps } from './dto/quick-sell';
 import { User } from 'src/users/entities/user-entity';
+import { PickStarterTeamProps } from './dto/pick-starter-team';
+import { ClubSetupProps } from './dto/finish-club-setup';
 
 @Resolver((of) => GeneratedCard)
 export class GeneratedCardsResolver {
@@ -100,5 +102,15 @@ export class GeneratedCardsResolver {
     @Args('quickSellCard') quickSellCard: QuickSellProps,
   ): Promise<User> {
     return this.generatedCardsService.quickSellCard(quickSellCard);
+  }
+
+  @Mutation((returns) => [GeneratedCard])
+  pickStarterTeam(@Args('pickStarterTeam') pickStarterTeam: PickStarterTeamProps): Promise<GeneratedCard[]> {
+    return this.generatedCardsService.pickStarterTeam(pickStarterTeam)
+  }
+
+  @Mutation((returns) => User)
+  finishClubSetup(@Args('clubSetup') clubSetup: ClubSetupProps): Promise<User> {
+    return this.generatedCardsService.finishClubSetup(clubSetup)
   }
 }

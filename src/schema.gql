@@ -198,6 +198,8 @@ type Mutation {
   openSilverPack(id: String!): [PackResponse!]!
   openBronzePack(id: String!): [PackResponse!]!
   quickSellCard(quickSellCard: QuickSellProps!): User!
+  pickStarterTeam(pickStarterTeam: PickStarterTeamProps!): [GeneratedCard!]!
+  finishClubSetup(clubSetup: ClubSetupProps!): User!
   createBadge(createBadgeInput: CreateBadgeInput!): Badge!
   sellBadge(sellBadge: SellBadge!): GeneratedBadge!
   buyBadge(buyBadge: BuyBadge!): GeneratedBadge!
@@ -299,6 +301,16 @@ input QuickSellProps {
   ownerId: String!
   cardId: String!
   price: Float!
+}
+
+input PickStarterTeamProps {
+  userId: String!
+  type: String!
+}
+
+input ClubSetupProps {
+  id: String!
+  clubname: String!
 }
 
 input CreateBadgeInput {

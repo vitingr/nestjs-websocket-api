@@ -10,6 +10,8 @@ import { Badge } from '@prisma/client';
 import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
 import { QuickSellProps } from './dto/quick-sell';
 import { User } from 'src/users/entities/user-entity';
+import { PickStarterTeamProps } from './dto/pick-starter-team';
+import { ClubSetupProps } from './dto/finish-club-setup';
 
 @Injectable()
 export class GeneratedCardsService {
@@ -54,7 +56,155 @@ export class GeneratedCardsService {
     });
   }
 
-  sellCard(data: SellCard): Promise<GeneratedCard> {
+  async sellCard(data: SellCard): Promise<GeneratedCard> {
+    // Vai buscar todas as lineups do usuário
+    const lineups = await this.prisma.lineup.findMany({
+      where: {
+        owner: data.ownerId,
+      },
+    });
+
+    // Vai realizar um laço de repetição para cada lineup do usuário
+    for (const lineup of lineups) {
+      // Vai armazenar os dados de cada jogador da respectiva escalação
+      const players: GeneratedCard[] = [];
+
+      for (let i = 1; i <= 11; i++) {
+        if (
+          // Validação se o campo da escalação está preenchido
+          lineup[`player${i}`] !== undefined ||
+          lineup[`player${i}`] !== null
+        ) {
+          // Vai buscar o jogador respectivo aquele index de busca
+          const player: GeneratedCard = JSON.parse(lineup[`player${i}`]);
+          players.push(player);
+        }
+      }
+
+      // Vai verificar se o ID do player que está sendo vendido é equivalente ao jogador daquela escalação
+      if (players[0]?.playerId === data.playerId) {
+        // Caso o jogador estava relacionado com esssa escalação, vai remover ele e deixar o campo nulo
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player1: '',
+          },
+        });
+      }
+
+      if (players[1]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player2: '',
+          },
+        });
+      }
+
+      if (players[2]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player3: '',
+          },
+        });
+      }
+
+      if (players[3]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player4: '',
+          },
+        });
+      }
+
+      if (players[4]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player5: '',
+          },
+        });
+      }
+
+      if (players[5]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player6: '',
+          },
+        });
+      }
+
+      if (players[6]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player7: '',
+          },
+        });
+      }
+
+      if (players[7]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player8: '',
+          },
+        });
+      }
+
+      if (players[8]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player9: '',
+          },
+        });
+      }
+
+      if (players[9]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player10: '',
+          },
+        });
+      }
+
+      if (players[10]?.playerId === data.playerId) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: data.ownerId,
+          },
+          data: {
+            player11: '',
+          },
+        });
+      }
+    }
+
     return this.prisma.playerCardGenerated.update({
       where: {
         id: data.playerId,
@@ -105,10 +255,7 @@ export class GeneratedCardsService {
     if (user) {
       const AllCards = await this.getRandomCards(
         6,
-        [
-          76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92,
-          93, 94, 95, 96, 97, 98, 99,
-        ],
+        [76, 77, 78, 79, 80, 81, 82, 83],
       );
       const cardDrop = await this.shuffleArray(AllCards);
 
@@ -342,7 +489,7 @@ export class GeneratedCardsService {
         data: GeneratedBadge,
       });
 
-      console.log(...GeneratedCard)
+      console.log(...GeneratedCard);
 
       return [...GeneratedCard, ...GeneratedBadge];
     } else {
@@ -477,22 +624,22 @@ export class GeneratedCardsService {
   async quickSellCard(quickSellCard: QuickSellProps): Promise<User> {
     await this.prisma.playerCardGenerated.delete({
       where: {
-        id: quickSellCard.cardId
-      }
-    })
+        id: quickSellCard.cardId,
+      },
+    });
 
     const user = await this.prisma.user.update({
       where: {
-        id: quickSellCard.ownerId
+        id: quickSellCard.ownerId,
       },
       data: {
         currency: {
-          increment: quickSellCard.price
-        }
-      }
-    })
+          increment: quickSellCard.price,
+        },
+      },
+    });
 
-    return user
+    return user;
   }
 
   // Funções
@@ -502,6 +649,26 @@ export class GeneratedCardsService {
         overall: {
           in: overalls,
         },
+      },
+    });
+    const randomItems = (await this.shuffleArray(allPossibleCards)).slice(
+      0,
+      count,
+    );
+    return randomItems;
+  }
+
+  private async getRandomLeagueCards(
+    count: number,
+    overalls: number[],
+    league: string,
+  ) {
+    const allPossibleCards = await this.prisma.playerCard.findMany({
+      where: {
+        overall: {
+          in: overalls,
+        },
+        league: league,
       },
     });
     const randomItems = (await this.shuffleArray(allPossibleCards)).slice(
@@ -555,5 +722,61 @@ export class GeneratedCardsService {
       // Usuário não te mdinheiro suficiente para comprar o pacote
       return null;
     }
+  }
+
+  async pickStarterTeam(data: PickStarterTeamProps): Promise<GeneratedCard[]> {
+    if (data.userId) {
+      const AllCards = await this.getRandomLeagueCards(
+        11,
+        [
+          45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61,
+          62, 63, 64,
+        ],
+        data.type,
+      );
+      const cardDrop = await this.shuffleArray(AllCards);
+
+      const GeneratedCard: GeneratedCard[] = cardDrop.map(
+        (card: Card, index: number) => ({
+          cardImage: card.cardImage,
+          owner: data.userId,
+          selling: false,
+          playerId: card.id,
+          name: card.name,
+          club: card.club,
+          league: card.league,
+          type: card.type,
+          position: card.position,
+          overall: card.overall,
+          pace: card.pace,
+          finalization: card.finalization,
+          pass: card.pass,
+          drible: card.drible,
+          defense: card.defense,
+          physic: card.physic,
+          minValue: card.minValue,
+          maxValue: card.maxValue,
+          quickSellValue: card.quickSellValue,
+        }),
+      );
+
+      const generatedCards = await this.prisma.playerCardGenerated.createMany({
+        data: GeneratedCard,
+      });
+
+      return GeneratedCard;
+    }
+  }
+
+  finishClubSetup(data: ClubSetupProps): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        newUser: false,
+        clubname: data.clubname,
+      },
+    });
   }
 }

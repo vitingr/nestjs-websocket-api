@@ -4,6 +4,7 @@ import { UpdateGeneratedBadgeInput } from './dto/update-generated-badge.input';
 
 @Injectable()
 export class GeneratedBadgeService {
+
   create(createGeneratedBadgeInput: CreateGeneratedBadgeInput) {
     return 'This action adds a new generatedBadge';
   }
@@ -23,4 +24,5 @@ export class GeneratedBadgeService {
   remove(id: number) {
     return `This action removes a #${id} generatedBadge`;
   }
+
 }

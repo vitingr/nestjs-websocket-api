@@ -2,7 +2,6 @@ import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { BadgeService } from './badge.service';
 import { Badge } from './entities/badge.entity';
 import { CreateBadgeInput } from './dto/create-badge.input';
-import { UpdateBadgeInput } from './dto/update-badge.input';
 import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
 import { SellBadge } from './dto/sell-badge';
 import { BuyBadge } from './dto/buy-badge';
