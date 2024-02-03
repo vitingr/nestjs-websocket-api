@@ -82,124 +82,124 @@ export class GeneratedCardsService {
       }
 
       // Vai verificar se o ID do player que está sendo vendido é equivalente ao jogador daquela escalação
-      if (players[0]?.playerId === data.playerId) {
+      if (players[0]?.id === data.playerId) {
         // Caso o jogador estava relacionado com esssa escalação, vai remover ele e deixar o campo nulo
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player1: '',
+            player1: null,
           },
         });
       }
 
-      if (players[1]?.playerId === data.playerId) {
+      if (players[1]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player2: '',
+            player2: null,
           },
         });
       }
 
-      if (players[2]?.playerId === data.playerId) {
+      if (players[2]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player3: '',
+            player3: null,
           },
         });
       }
 
-      if (players[3]?.playerId === data.playerId) {
+      if (players[3]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player4: '',
+            player4: null,
           },
         });
       }
 
-      if (players[4]?.playerId === data.playerId) {
+      if (players[4]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player5: '',
+            player5: null,
           },
         });
       }
 
-      if (players[5]?.playerId === data.playerId) {
+      if (players[5]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player6: '',
+            player6: null,
           },
         });
       }
 
-      if (players[6]?.playerId === data.playerId) {
+      if (players[6]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player7: '',
+            player7: null,
           },
         });
       }
 
-      if (players[7]?.playerId === data.playerId) {
+      if (players[7]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player8: '',
+            player8: null,
           },
         });
       }
 
-      if (players[8]?.playerId === data.playerId) {
+      if (players[8]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player9: '',
+            player9: null,
           },
         });
       }
 
-      if (players[9]?.playerId === data.playerId) {
+      if (players[9]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player10: '',
+            player10: null,
           },
         });
       }
 
-      if (players[10]?.playerId === data.playerId) {
+      if (players[10]?.id === data.playerId) {
         await this.prisma.lineup.updateMany({
           where: {
             owner: data.ownerId,
           },
           data: {
-            player11: '',
+            player11: null,
           },
         });
       }
