@@ -188,6 +188,7 @@ type Mutation {
   deleteUserLineup(id: String!): Lineup!
   updateLineupCard(updateLineupCard: UpdateLineupCard!): Lineup!
   selectLineup(selectLineup: SelectLineup!): User!
+  removeLineupPlayer(removeLineupPlayer: RemoveLineupPlayer!): Lineup!
   createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
@@ -265,6 +266,11 @@ input UpdateLineupCard {
 input SelectLineup {
   userId: String!
   lineupId: String!
+}
+
+input RemoveLineupPlayer {
+  lineupId: String!
+  position: String!
 }
 
 input CreateGeneratedCardInput {

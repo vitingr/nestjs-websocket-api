@@ -5,6 +5,7 @@ import { CreateLineupInput } from './dto/create-lineup.input';
 import { UpdateLineupCard } from './dto/update-lineup-card';
 import { SelectLineup } from './dto/select-lineup';
 import { User } from 'src/users/entities/user-entity';
+import { RemoveLineupPlayer } from './dto/remove-player';
 
 @Resolver((of) => Lineup)
 export class LineupsResolver {
@@ -50,5 +51,10 @@ export class LineupsResolver {
   @Query((returns) => Lineup)
   findUserCurrentLineup(@Args('id', {type: () => String}) id: string): Promise<Lineup> {
     return this.lineupsService.findUserCurrentLineup(id)
+  }
+
+  @Mutation((returns) => Lineup)
+  removeLineupPlayer(@Args('removeLineupPlayer') removeLineupPlayer: RemoveLineupPlayer): Promise<Lineup> {
+    return this.lineupsService.removeLineupPlayer(removeLineupPlayer)
   }
 }

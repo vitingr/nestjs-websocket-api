@@ -7,6 +7,7 @@ import { UpdateLineupCard } from './dto/update-lineup-card';
 import { PlayerCardProps } from 'types';
 import { SelectLineup } from './dto/select-lineup';
 import { User } from 'src/users/entities/user-entity';
+import { RemoveLineupPlayer } from './dto/remove-player';
 
 @Injectable()
 export class LineupsService {
@@ -73,46 +74,66 @@ export class LineupsService {
     //   position: newCardData.position,
     // },
 
-    return this.prisma.lineup.update({
-      where: {
-        id: data.lineupId,
-      },
-      data: {
-        [`player${data.index}`]: data.playerData
-      },
-    })
-    .then(updatedLineup => {
-      return {
-        ...updatedLineup,
-      };
-    });
-
+    return this.prisma.lineup
+      .update({
+        where: {
+          id: data.lineupId,
+        },
+        data: {
+          [`player${data.index}`]: data.playerData,
+        },
+      })
+      .then((updatedLineup) => {
+        return {
+          ...updatedLineup,
+        };
+      });
   }
 
   selectLineup(data: SelectLineup): Promise<User> {
     return this.prisma.user.update({
       where: {
-        id: data.userId
+        id: data.userId,
       },
       data: {
-        currentLineup: data.lineupId
-      }
-    })
+        currentLineup: data.lineupId,
+      },
+    });
   }
 
   async findUserCurrentLineup(id: string): Promise<Lineup> {
     const user = await this.prisma.user.findUnique({
       where: {
-        id: id
-      }
-    })
+        id: id,
+      },
+    });
 
     const lineup = await this.prisma.lineup.findUnique({
       where: {
-        id: user.currentLineup
-      }
-    })
+        id: user.currentLineup,
+      },
+    });
 
-    return lineup
+    return lineup;
+  }
+
+  async removeLineupPlayer(data: RemoveLineupPlayer): Promise<Lineup> {
+    let lineupUpdated: any
+    
+    if (data.position.startsWith('player')) {
+      const playerNumber = parseInt(data.position.slice(6));
+      if (!isNaN(playerNumber) && playerNumber >= 1 && playerNumber <= 11) {
+        lineupUpdated = await this.prisma.lineup.update({
+          where: {
+            id: data.lineupId,
+          },
+          data: {
+            [`player${playerNumber}`]: null,
+          },
+        });
+      }
+    }
+
+    return lineupUpdated
   }
 }
