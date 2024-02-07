@@ -12,6 +12,7 @@ import { QuickSellProps } from './dto/quick-sell';
 import { User } from 'src/users/entities/user-entity';
 import { PickStarterTeamProps } from './dto/pick-starter-team';
 import { ClubSetupProps } from './dto/finish-club-setup';
+import { OpenPackProps } from './dto/open-pack';
 
 @Injectable()
 export class GeneratedCardsService {
@@ -249,8 +250,13 @@ export class GeneratedCardsService {
   }
 
   // Open Rare Players Pack
-  async openPlayersPack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 35000);
+  async openPlayersPack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      35000,
+      350,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(
@@ -262,7 +268,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -291,7 +297,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -312,8 +318,13 @@ export class GeneratedCardsService {
   }
 
   // Open Rare Gold Pack
-  async openRareGoldPack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 10000);
+  async openRareGoldPack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      10000,
+      150,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(
@@ -325,7 +336,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -354,7 +365,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -374,8 +385,13 @@ export class GeneratedCardsService {
     }
   }
 
-  async openGoldPack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 10000);
+  async openGoldPack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      10000,
+      100,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(
@@ -387,7 +403,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -416,7 +432,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -436,8 +452,13 @@ export class GeneratedCardsService {
     }
   }
 
-  async openRareSilverPack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 10000);
+  async openRareSilverPack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      10000,
+      75,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(6, [68, 69, 70, 71, 72, 73]);
@@ -446,7 +467,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -475,7 +496,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -495,8 +516,13 @@ export class GeneratedCardsService {
     }
   }
 
-  async openSilverPack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 10000);
+  async openSilverPack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      10000,
+      50,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(
@@ -508,7 +534,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -537,7 +563,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -557,8 +583,13 @@ export class GeneratedCardsService {
     }
   }
 
-  async openBronzePack(userId: string): Promise<any> {
-    const user = await this.haveUserMoneySuficient(userId, 10000);
+  async openBronzePack(data: OpenPackProps): Promise<any> {
+    const user = await this.haveUserMoneySuficient(
+      data.userId,
+      10000,
+      25,
+      data.method,
+    );
 
     if (user) {
       const AllCards = await this.getRandomCards(
@@ -570,7 +601,7 @@ export class GeneratedCardsService {
       const GeneratedCard: GeneratedCard[] = cardDrop.map(
         (card: Card, index: number) => ({
           cardImage: card.cardImage,
-          owner: userId,
+          owner: data.userId,
           selling: false,
           playerId: card.id,
           name: card.name,
@@ -599,7 +630,7 @@ export class GeneratedCardsService {
       const GeneratedBadge: GeneratedBadge[] = allBadges.map(
         (badge: Badge, index: number) => ({
           badgeId: badge.id,
-          ownerId: userId,
+          ownerId: data.userId,
           selling: false,
           badgeImage: badge.badgeImage,
           clubname: badge.clubname,
@@ -693,7 +724,12 @@ export class GeneratedCardsService {
     return array;
   }
 
-  private async haveUserMoneySuficient(userId: string, packPrice: number) {
+  private async haveUserMoneySuficient(
+    userId: string,
+    coinsPackPrice: number,
+    futpointsPackPrice: number,
+    method: string,
+  ) {
     // Buscar os dados do usuário para análise
     const userData = await this.prisma.user.findUnique({
       where: {
@@ -701,24 +737,48 @@ export class GeneratedCardsService {
       },
     });
 
-    // Verificação se o usuário possui dinheiro suficiente
-    if (userData.currency >= packPrice) {
-      // Usuário tem dinheiro suficiente para comprar o pacote
-      await this.prisma.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          // Descontar o valor do pacote da conta
-          currency: {
-            decrement: packPrice,
+    if (method === 'coins') {
+      // Verificação se o usuário possui dinheiro suficiente
+      if (userData.currency >= coinsPackPrice) {
+        // Usuário tem dinheiro suficiente para comprar o pacote
+        await this.prisma.user.update({
+          where: {
+            id: userId,
           },
-        },
-      });
-      return userData;
-    } else {
-      // Usuário não te mdinheiro suficiente para comprar o pacote
-      return null;
+          data: {
+            // Descontar o valor do pacote da conta
+            currency: {
+              decrement: coinsPackPrice,
+            },
+          },
+        });
+        return userData;
+      } else {
+        // Usuário não te mdinheiro suficiente para comprar o pacote
+        return null;
+      }
+    }
+
+    if (method === 'fut-points') {
+      // Verificação se o usuário possui dinheiro suficiente
+      if (userData.futpoints >= futpointsPackPrice) {
+        // Usuário tem dinheiro suficiente para comprar o pacote
+        await this.prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            // Descontar o valor do pacote da conta
+            futpoints: {
+              decrement: futpointsPackPrice,
+            },
+          },
+        });
+        return userData;
+      } else {
+        // Usuário não te mdinheiro suficiente para comprar o pacote
+        return null;
+      }
     }
   }
 

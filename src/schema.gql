@@ -31,6 +31,7 @@ type User {
   loses: Int
   searchingMatch: Boolean
   currentLineup: String
+  quizCompleted: [String!]!
 }
 
 type Card {
@@ -183,6 +184,7 @@ type Mutation {
   useLineupDriver(id: String!): User!
   useProfileDriver(id: String!): User!
   changeClubBadge(changeClubBadge: ChangeClubBadge!): User!
+  completeQuiz(completeQuiz: CompleteQuizProps!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
   deleteUserLineup(id: String!): Lineup!
@@ -192,12 +194,12 @@ type Mutation {
   createGeneratedCard(createGeneratedCardInput: CreateGeneratedCardInput!): GeneratedCard!
   sellCard(sellCard: SellCard!): GeneratedCard!
   buyCard(sellCard: SellCard!): GeneratedCard!
-  openPlayersPack(id: String!): [PackResponse!]!
-  openRareGoldPack(id: String!): [PackResponse!]!
-  openGoldPack(id: String!): [PackResponse!]!
-  openRareSilverPack(id: String!): [PackResponse!]!
-  openSilverPack(id: String!): [PackResponse!]!
-  openBronzePack(id: String!): [PackResponse!]!
+  openPlayersPack(openPack: OpenPackProps!): [PackResponse!]!
+  openRareGoldPack(openPack: OpenPackProps!): [PackResponse!]!
+  openGoldPack(openPack: OpenPackProps!): [PackResponse!]!
+  openRareSilverPack(openPack: OpenPackProps!): [PackResponse!]!
+  openSilverPack(openPack: OpenPackProps!): [PackResponse!]!
+  openBronzePack(openPack: OpenPackProps!): [PackResponse!]!
   quickSellCard(quickSellCard: QuickSellProps!): User!
   pickStarterTeam(pickStarterTeam: PickStarterTeamProps!): [GeneratedCard!]!
   finishClubSetup(clubSetup: ClubSetupProps!): User!
@@ -228,6 +230,12 @@ input ChangeClubBadge {
   userId: String!
   clubBadge: String!
   badgeImage: String!
+}
+
+input CompleteQuizProps {
+  userId: String!
+  quiz: String!
+  prize: Float!
 }
 
 input CreateCardInput {
@@ -301,6 +309,11 @@ input SellCard {
   newOwnerId: String!
   playerId: String!
   price: Float!
+}
+
+input OpenPackProps {
+  userId: String!
+  method: String!
 }
 
 input QuickSellProps {

@@ -4,6 +4,7 @@ import { User } from './entities/user-entity';
 import { CreateUser } from './dto/create-user';
 import { ChangeClubName } from './dto/change-club-name';
 import { ChangeClubBadge } from './dto/change-club-badge';
+import { CompleteQuizProps } from './dto/complete-quiz';
 
 @Injectable()
 export class UsersService {
@@ -128,5 +129,21 @@ export class UsersService {
         badgeImage: changeClubBadge.badgeImage
       },
     });
+  }
+
+  completeQuiz(data: CompleteQuizProps): Promise<User> {
+    return this.prisma.user.update({
+      where: {
+        id: data.userId
+      },
+      data: {
+        quizCompleted: {
+          push: data.quiz
+        },
+        currency: {
+          increment: data.prize
+        }
+      }
+    })
   }
 }

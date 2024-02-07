@@ -85,4 +85,7 @@ export class User {
 
   @Field({nullable: true})
   currentLineup: string;
+
+  @Field((type) => [String])
+  quizCompleted: string[];
 }

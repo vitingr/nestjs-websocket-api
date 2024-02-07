@@ -5,6 +5,7 @@ import { CreateUser } from './dto/create-user';
 import { SendFriendInvite } from './dto/send-invite';
 import { ChangeClubName } from './dto/change-club-name';
 import { ChangeClubBadge } from './dto/change-club-badge';
+import { CompleteQuizProps } from './dto/complete-quiz';
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -80,5 +81,12 @@ export class UsersResolver {
     @Args('changeClubBadge') changeClubBadge: ChangeClubBadge,
   ): Promise<User> {
     return this.userService.changeClubBadge(changeClubBadge);
+  }
+
+  @Mutation((returns) => User)
+  completeQuiz(
+    @Args('completeQuiz') completeQuiz: CompleteQuizProps,
+  ): Promise<User> {
+    return this.userService.completeQuiz(completeQuiz);
   }
 }

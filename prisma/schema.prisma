@@ -36,6 +36,7 @@ model User {
   loses               Int?                  @default(0)
   searchingMatch      Boolean?              @default(false)
   currentLineup       String?               @db.ObjectId
+  quizCompleted       String[]
   PlayerCardGenerated PlayerCardGenerated[]
   Lineup              Lineup[]
   BadgeCreated        BadgeCreated[]
