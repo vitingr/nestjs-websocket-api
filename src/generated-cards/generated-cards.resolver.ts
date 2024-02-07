@@ -59,42 +59,42 @@ export class GeneratedCardsResolver {
   @Mutation((returns) => [PackResponse])
   openPlayersPack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openPlayersPack(openPack);
   }
 
   @Mutation((returns) => [PackResponse])
   openRareGoldPack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openRareGoldPack(openPack);
   }
 
   @Mutation((returns) => [PackResponse])
   openGoldPack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openGoldPack(openPack);
   }
 
   @Mutation((returns) => [PackResponse])
   openRareSilverPack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openRareSilverPack(openPack);
   }
 
   @Mutation((returns) => [PackResponse])
   openSilverPack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openSilverPack(openPack);
   }
 
   @Mutation((returns) => [PackResponse])
   openBronzePack(
     @Args('openPack') openPack: OpenPackProps,
-  ): Promise<[GeneratedCard[], GeneratedBadge[]]> {
+  ): Promise<PackResponse[]> {
     return this.generatedCardsService.openBronzePack(openPack);
   }
 

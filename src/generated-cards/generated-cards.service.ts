@@ -388,7 +388,7 @@ export class GeneratedCardsService {
   async openGoldPack(data: OpenPackProps): Promise<any> {
     const user = await this.haveUserMoneySuficient(
       data.userId,
-      10000,
+      7500,
       100,
       data.method,
     );
@@ -455,7 +455,7 @@ export class GeneratedCardsService {
   async openRareSilverPack(data: OpenPackProps): Promise<any> {
     const user = await this.haveUserMoneySuficient(
       data.userId,
-      10000,
+      5000,
       75,
       data.method,
     );
@@ -519,7 +519,7 @@ export class GeneratedCardsService {
   async openSilverPack(data: OpenPackProps): Promise<any> {
     const user = await this.haveUserMoneySuficient(
       data.userId,
-      10000,
+      2500,
       50,
       data.method,
     );
@@ -586,7 +586,7 @@ export class GeneratedCardsService {
   async openBronzePack(data: OpenPackProps): Promise<any> {
     const user = await this.haveUserMoneySuficient(
       data.userId,
-      10000,
+      500,
       25,
       data.method,
     );
