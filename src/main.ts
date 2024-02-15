@@ -8,7 +8,7 @@ async function bootstrap() {
   app.use(cors());
   app.enableCors({
     // origin: ['https://pifa-24.vercel.app', 'http://localhost:3000/'],
-    origin: "*",
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });

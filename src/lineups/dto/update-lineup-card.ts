@@ -6,17 +6,17 @@ import { IsAlpha } from 'class-validator';
 class PlayerDataInput {
   @Field()
   cardImage: string;
-  
+
   @Field()
   owner: string;
 
   @Field((type) => Boolean)
   selling: boolean;
 
-  @Field((type) => Date, {nullable: true})
+  @Field((type) => Date, { nullable: true })
   created?: Date;
 
-  @Field((type) => Float, {nullable: true})
+  @Field((type) => Float, { nullable: true })
   price?: number;
 
   @Field()
@@ -45,16 +45,16 @@ class PlayerDataInput {
 
   @Field((type) => Int)
   finalization: number;
-  
+
   @Field((type) => Int)
   pass: number;
- 
+
   @Field((type) => Int)
   drible: number;
- 
+
   @Field((type) => Int)
   defense: number;
- 
+
   @Field((type) => Int)
   physic: number;
 

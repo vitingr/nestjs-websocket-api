@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLineupInput } from './dto/create-lineup.input';
-import { UpdateLineupInput } from './dto/update-lineup.input';
 import { Lineup } from './entities/lineup.entity';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateLineupCard } from './dto/update-lineup-card';
-import { PlayerCardProps } from 'types';
 import { SelectLineup } from './dto/select-lineup';
 import { User } from 'src/users/entities/user-entity';
 import { RemoveLineupPlayer } from './dto/remove-player';
+import { DeleteUserLineupProps } from './dto/delete-lineup';
 
 @Injectable()
 export class LineupsService {
@@ -41,38 +40,34 @@ export class LineupsService {
     });
   }
 
-  deleteUserLineup(id: string): Promise<Lineup> {
-    return this.prisma.lineup.delete({
+  async deleteUserLineup(data: DeleteUserLineupProps): Promise<Lineup> {
+    const removedLineup = await this.prisma.lineup.delete({
       where: {
-        id: id,
+        id: data.lineupId,
       },
     });
+
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: data.userId
+      }
+    })
+
+    if (user.currentLineup === data.lineupId) {
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          id: data.userId
+        },
+        data: {
+          currentLineup: null
+        }
+      })
+    }
+
+    return removedLineup
   }
 
   updateLineupCard(data: UpdateLineupCard): Promise<Lineup> {
-    // const newCardData: PlayerCardProps = JSON.parse(JSON.stringify(data.playerData));
-    // {
-    //   id: newCardData.id,
-    //   cardImage: newCardData.cardImage,
-    //   owner: newCardData.owner,
-    //   selling: newCardData.selling,
-    //   playerId: newCardData.playerId,
-    //   name: newCardData.name,
-    //   club: newCardData.club,
-    //   league: newCardData.league,
-    //   type: newCardData.type,
-    //   overall: newCardData.overall,
-    //   pace: newCardData.pace,
-    //   finalization: newCardData.finalization,
-    //   pass: newCardData.pass,
-    //   drible: newCardData.drible,
-    //   defense: newCardData.defense,
-    //   physic: newCardData.physic,
-    //   minValue: newCardData.minValue,
-    //   maxValue: newCardData.maxValue,
-    //   quickSellValue: newCardData.quickSellValue,
-    //   position: newCardData.position,
-    // },
 
     return this.prisma.lineup
       .update({

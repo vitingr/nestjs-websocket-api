@@ -187,7 +187,7 @@ type Mutation {
   completeQuiz(completeQuiz: CompleteQuizProps!): User!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
-  deleteUserLineup(id: String!): Lineup!
+  deleteUserLineup(deleteUserLineup: DeleteUserLineupProps!): Lineup!
   updateLineupCard(updateLineupCard: UpdateLineupCard!): Lineup!
   selectLineup(selectLineup: SelectLineup!): User!
   removeLineupPlayer(removeLineupPlayer: RemoveLineupPlayer!): Lineup!
@@ -262,6 +262,11 @@ input CreateLineupInput {
   overall: Float
   totalOverall: Float
   owner: String!
+}
+
+input DeleteUserLineupProps {
+  lineupId: String!
+  userId: String!
 }
 
 input UpdateLineupCard {
