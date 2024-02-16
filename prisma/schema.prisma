@@ -37,6 +37,7 @@ model User {
   searchingMatch      Boolean?              @default(false)
   currentLineup       String?               @db.ObjectId
   quizCompleted       String[]
+  dmeCompleted        String[]
   PlayerCardGenerated PlayerCardGenerated[]
   Lineup              Lineup[]
   BadgeCreated        BadgeCreated[]

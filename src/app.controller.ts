@@ -10,8 +10,8 @@ export class AppController {
     return this.appService.getHello();
   }
 
-  // @Get('/graphql')
-  // getGraphQlHello(): string {
-  //   return 'GraphQL Server is running!';
-  // }
+  @Get('/graphql')
+  getGraphQlHello(): string {
+    return 'GraphQL Server is running!';
+  }
 }

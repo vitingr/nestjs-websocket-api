@@ -6,6 +6,10 @@ import { SendFriendInvite } from './dto/send-invite';
 import { ChangeClubName } from './dto/change-club-name';
 import { ChangeClubBadge } from './dto/change-club-badge';
 import { CompleteQuizProps } from './dto/complete-quiz';
+import { Challenge1Props } from './dto/challenge1';
+import { Challenge2Props } from './dto/challenge2';
+import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
+import { PlayerCardGenerated } from '@prisma/client';
 
 @Resolver((of) => User)
 export class UsersResolver {
@@ -88,5 +92,15 @@ export class UsersResolver {
     @Args('completeQuiz') completeQuiz: CompleteQuizProps,
   ): Promise<User> {
     return this.userService.completeQuiz(completeQuiz);
+  }
+
+  @Mutation((returns) => User) 
+  completeChallenge1(@Args('completeChallenge1') completeChallenge1: Challenge1Props): Promise<User> {
+    return this.userService.completeChallenge1(completeChallenge1)
+  }
+
+  @Mutation((returns) => GeneratedCard)
+  completeChallenge2(@Args('completeChallenge2') completeChallenge2: Challenge2Props): Promise<PlayerCardGenerated> {
+    return this.userService.completeChallenge2(completeChallenge2)
   }
 }

@@ -32,7 +32,38 @@ type User {
   searchingMatch: Boolean
   currentLineup: String
   quizCompleted: [String!]!
+  dmeCompleted: [String!]!
 }
+
+type GeneratedCard {
+  id: String!
+  cardImage: String!
+  owner: String!
+  selling: Boolean!
+  created: DateTime!
+  price: Float
+  playerId: String!
+  name: String!
+  club: String!
+  league: String!
+  type: String!
+  position: String!
+  overall: Int!
+  pace: Int!
+  finalization: Int!
+  pass: Int!
+  drible: Int!
+  defense: Int!
+  physic: Int!
+  minValue: Float!
+  maxValue: Float!
+  quickSellValue: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Card {
   id: String!
@@ -72,36 +103,6 @@ type Lineup {
   player10: String
   player11: String
 }
-
-type GeneratedCard {
-  id: String!
-  cardImage: String!
-  owner: String!
-  selling: Boolean!
-  created: DateTime!
-  price: Float
-  playerId: String!
-  name: String!
-  club: String!
-  league: String!
-  type: String!
-  position: String!
-  overall: Int!
-  pace: Int!
-  finalization: Int!
-  pass: Int!
-  drible: Int!
-  defense: Int!
-  physic: Int!
-  minValue: Float!
-  maxValue: Float!
-  quickSellValue: Float!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type GeneratedBadge {
   id: String!
@@ -185,6 +186,8 @@ type Mutation {
   useProfileDriver(id: String!): User!
   changeClubBadge(changeClubBadge: ChangeClubBadge!): User!
   completeQuiz(completeQuiz: CompleteQuizProps!): User!
+  completeChallenge1(completeChallenge1: Challenge1Props!): User!
+  completeChallenge2(completeChallenge2: Challenge2Props!): GeneratedCard!
   createCard(createCardInput: CreateCardInput!): Card!
   createLineup(createLineupInput: CreateLineupInput!): Lineup!
   deleteUserLineup(deleteUserLineup: DeleteUserLineupProps!): Lineup!
@@ -236,6 +239,20 @@ input CompleteQuizProps {
   userId: String!
   quiz: String!
   prize: Float!
+}
+
+input Challenge1Props {
+  userId: String!
+  player1: String!
+  player2: String!
+  player3: String!
+}
+
+input Challenge2Props {
+  userId: String!
+  player1: String!
+  player2: String!
+  player3: String!
 }
 
 input CreateCardInput {

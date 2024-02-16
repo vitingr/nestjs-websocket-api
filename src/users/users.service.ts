@@ -5,6 +5,10 @@ import { CreateUser } from './dto/create-user';
 import { ChangeClubName } from './dto/change-club-name';
 import { ChangeClubBadge } from './dto/change-club-badge';
 import { CompleteQuizProps } from './dto/complete-quiz';
+import { Challenge1Props } from './dto/challenge1';
+import { Challenge2Props } from './dto/challenge2';
+import { GeneratedCard } from 'src/generated-cards/entities/generated-card.entity';
+import { PlayerCardGenerated } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
@@ -145,5 +149,72 @@ export class UsersService {
         }
       }
     })
+  }
+
+  async completeChallenge1(data: Challenge1Props): Promise<User> {
+    const updatedCards = await this.prisma.playerCardGenerated.deleteMany({
+      where: {
+        id: {
+          in: [data.player1, data.player2, data.player3]
+        }
+      }
+    })
+
+    const userUpdated = await this.prisma.user.update({
+      where: {
+        id: data.userId
+      },
+      data: {
+        currency: {
+          increment: 1000
+        },
+        dmeCompleted: {
+          push: "challenge1"
+        }
+      }
+    })
+
+    return userUpdated
+  }
+
+  async completeChallenge2(data: Challenge2Props): Promise<PlayerCardGenerated> {
+    const playerData = {
+      cardImage: "http://res.cloudinary.com/djwne0azq/image/upload/v1708024390/ha9pm03wp0bfffzn75vv.png",
+      owner: data.userId,
+      selling: false,
+      playerId: "65ce6248dc00cca7859adc2e",
+      name: "Bastos",
+      club: "Botafogo",
+      league: "Brasileirão Série A",
+      type: "SBC",
+      position: "Zagueiro",
+      overall: 76,
+      pace: 70,
+      finalization: 44,
+      pass: 59,
+      drible: 54,
+      defense: 76,
+      physic: 82,
+      minValue: 350,
+      maxValue: 500,
+      quickSellValue: 350,
+    }
+
+    const createdCard = await this.prisma.playerCardGenerated.create({
+      data: playerData
+    })
+
+    const updatedUser = await this.prisma.user.update({
+      where: {
+        id: data.userId
+      },
+      data: {
+        dmeCompleted: {
+          push: "challenge2"
+        }
+      }
+    })
+
+    return createdCard
   }
 }

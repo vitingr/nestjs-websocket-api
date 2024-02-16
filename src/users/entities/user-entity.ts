@@ -88,4 +88,7 @@ export class User {
 
   @Field((type) => [String])
   quizCompleted: string[];
+
+  @Field((type) => [String])
+  dmeCompleted: string[];
 }
