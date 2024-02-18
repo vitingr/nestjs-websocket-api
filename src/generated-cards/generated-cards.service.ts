@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateGeneratedCardInput } from './dto/create-generated-card.input';
-import { UpdateGeneratedCardInput } from './dto/update-generated-card.input';
 import { GeneratedCard } from './entities/generated-card.entity';
 import { PrismaService } from 'src/database/prisma.service';
 import { Card } from 'src/cards/entities/card.entity';
@@ -58,153 +57,7 @@ export class GeneratedCardsService {
   }
 
   async sellCard(data: SellCard): Promise<GeneratedCard> {
-    // Vai buscar todas as lineups do usuário
-    const lineups = await this.prisma.lineup.findMany({
-      where: {
-        owner: data.ownerId,
-      },
-    });
-
-    // Vai realizar um laço de repetição para cada lineup do usuário
-    for (const lineup of lineups) {
-      // Vai armazenar os dados de cada jogador da respectiva escalação
-      const players: GeneratedCard[] = [];
-
-      for (let i = 1; i <= 11; i++) {
-        if (
-          // Validação se o campo da escalação está preenchido
-          lineup[`player${i}`] !== undefined ||
-          lineup[`player${i}`] !== null
-        ) {
-          // Vai buscar o jogador respectivo aquele index de busca
-          const player: GeneratedCard = JSON.parse(lineup[`player${i}`]);
-          players.push(player);
-        }
-      }
-
-      // Vai verificar se o ID do player que está sendo vendido é equivalente ao jogador daquela escalação
-      if (players[0]?.id === data.playerId) {
-        // Caso o jogador estava relacionado com esssa escalação, vai remover ele e deixar o campo nulo
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player1: null,
-          },
-        });
-      }
-
-      if (players[1]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player2: null,
-          },
-        });
-      }
-
-      if (players[2]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player3: null,
-          },
-        });
-      }
-
-      if (players[3]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player4: null,
-          },
-        });
-      }
-
-      if (players[4]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player5: null,
-          },
-        });
-      }
-
-      if (players[5]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player6: null,
-          },
-        });
-      }
-
-      if (players[6]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player7: null,
-          },
-        });
-      }
-
-      if (players[7]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player8: null,
-          },
-        });
-      }
-
-      if (players[8]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player9: null,
-          },
-        });
-      }
-
-      if (players[9]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player10: null,
-          },
-        });
-      }
-
-      if (players[10]?.id === data.playerId) {
-        await this.prisma.lineup.updateMany({
-          where: {
-            owner: data.ownerId,
-          },
-          data: {
-            player11: null,
-          },
-        });
-      }
-    }
+    await this.removeLineupPlayers([data.playerId], data.ownerId);
 
     return this.prisma.playerCardGenerated.update({
       where: {
@@ -651,6 +504,11 @@ export class GeneratedCardsService {
   }
 
   async quickSellCard(quickSellCard: QuickSellProps): Promise<User> {
+    await this.removeLineupPlayers(
+      [quickSellCard.playerId],
+      quickSellCard.ownerId,
+    );
+
     await this.prisma.playerCardGenerated.delete({
       where: {
         id: quickSellCard.cardId,
@@ -836,5 +694,155 @@ export class GeneratedCardsService {
         clubname: data.clubname,
       },
     });
+  }
+
+  private async removeLineupPlayers(playersIds: string[], userId: string) {
+    // Vai buscar todas as lineups do usuário
+    const lineups = await this.prisma.lineup.findMany({
+      where: {
+        owner: userId,
+      },
+    });
+
+    // Vai realizar um laço de repetição para cada lineup do usuário
+    for (const lineup of lineups) {
+      // Vai armazenar os dados de cada jogador da respectiva escalação
+      const players: GeneratedCard[] = [];
+
+      for (let i = 1; i <= 11; i++) {
+        if (
+          // Validação se o campo da escalação está preenchido
+          lineup[`player${i}`] !== undefined ||
+          lineup[`player${i}`] !== null
+        ) {
+          // Vai buscar o jogador respectivo aquele index de busca
+          const player: GeneratedCard = JSON.parse(lineup[`player${i}`]);
+          players.push(player);
+        }
+      }
+
+      // Vai verificar se o ID do player que está sendo vendido é equivalente ao jogador daquela escalação
+      if (playersIds.includes(players[0]?.id)) {
+        // Caso o jogador estava relacionado com esssa escalação, vai remover ele e deixar o campo nulo
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player1: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[1]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player2: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[2]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player3: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[3]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player4: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[4]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player5: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[5]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player6: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[6]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player7: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[7]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player8: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[8]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player9: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[9]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player10: null,
+          },
+        });
+      }
+
+      if (playersIds.includes(players[10]?.id)) {
+        await this.prisma.lineup.updateMany({
+          where: {
+            owner: userId,
+          },
+          data: {
+            player11: null,
+          },
+        });
+      }
+    }
   }
 }

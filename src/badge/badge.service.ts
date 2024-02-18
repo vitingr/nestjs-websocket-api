@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBadgeInput } from './dto/create-badge.input';
-import { UpdateBadgeInput } from './dto/update-badge.input';
 import { PrismaService } from 'src/database/prisma.service';
 import { Badge } from '@prisma/client';
 import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
 import { SellBadge } from './dto/sell-badge';
 import { BuyBadge } from './dto/buy-badge';
+import { QuickSellBadgeProps } from './dto/quick-sell-badge';
 
 @Injectable()
 export class BadgeService {
@@ -110,5 +110,44 @@ export class BadgeService {
         selling: true,
       },
     });
+  }
+
+  async quickSellBadge(data: QuickSellBadgeProps): Promise<GeneratedBadge> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: data.ownerId
+      }
+    })
+
+    if (user.badge === data.badgeId) {
+      await this.prisma.user.update({
+        where: {
+          id: data.ownerId
+        },
+        data: {
+          badgeImage: "/assets/undefinedTeam.png",
+          badge: ""
+        }
+      })
+    }
+
+    const removedBadge = await this.prisma.badgeCreated.delete({
+      where: {
+        id: data.badgeId
+      }
+    })
+
+    const updatedUser = await this.prisma.user.update({
+      where: {
+        id: data.ownerId
+      },
+      data: {
+        currency: {
+          increment: data.price
+        }
+      }
+    })
+
+    return removedBadge
   }
 }

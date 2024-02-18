@@ -2,19 +2,16 @@ import { InputType, Int, Field, Float } from '@nestjs/graphql';
 import { IsAlpha } from 'class-validator';
 
 @InputType()
-export class QuickSellProps {
-  @Field()
+export class QuickSellBadgeProps {
   @IsAlpha()
+  @Field()
+  badgeId: string;
+
+  @IsAlpha()
+  @Field()
   ownerId: string;
-
-  @Field()
-  @IsAlpha()
-  playerId: string;
-
-  @Field()
-  @IsAlpha()
-  cardId: string;
 
   @Field((type) => Float)
   price: number;
+
 }

@@ -5,6 +5,7 @@ import { CreateBadgeInput } from './dto/create-badge.input';
 import { GeneratedBadge } from 'src/generated-badge/entities/generated-badge.entity';
 import { SellBadge } from './dto/sell-badge';
 import { BuyBadge } from './dto/buy-badge';
+import { QuickSellBadgeProps } from './dto/quick-sell-badge';
 
 @Resolver((of) => Badge)
 export class BadgeResolver {
@@ -49,5 +50,10 @@ export class BadgeResolver {
   @Query((returns) => [GeneratedBadge])
   findSellingBadges(): Promise<GeneratedBadge[]> {
     return this.badgeService.findSellingBadges();
+  }
+
+  @Mutation((returns) => GeneratedBadge)
+  quickSellBadge(@Args('quickSellBadge') quickSellBadge: QuickSellBadgeProps): Promise<GeneratedBadge> {
+    return this.badgeService.quickSellBadge(quickSellBadge)
   }
 }

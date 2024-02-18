@@ -209,6 +209,7 @@ type Mutation {
   createBadge(createBadgeInput: CreateBadgeInput!): Badge!
   sellBadge(sellBadge: SellBadge!): GeneratedBadge!
   buyBadge(buyBadge: BuyBadge!): GeneratedBadge!
+  quickSellBadge(quickSellBadge: QuickSellBadgeProps!): GeneratedBadge!
   createGeneratedBadge(createGeneratedBadgeInput: CreateGeneratedBadgeInput!): GeneratedBadge!
   updateGeneratedBadge(updateGeneratedBadgeInput: UpdateGeneratedBadgeInput!): GeneratedBadge!
   removeGeneratedBadge(id: Int!): GeneratedBadge!
@@ -340,6 +341,7 @@ input OpenPackProps {
 
 input QuickSellProps {
   ownerId: String!
+  playerId: String!
   cardId: String!
   price: Float!
 }
@@ -372,6 +374,12 @@ input BuyBadge {
   id: String!
   ownerId: String!
   newOwnerId: String!
+  price: Float!
+}
+
+input QuickSellBadgeProps {
+  badgeId: String!
+  ownerId: String!
   price: Float!
 }
 
