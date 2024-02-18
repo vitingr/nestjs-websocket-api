@@ -505,7 +505,7 @@ export class GeneratedCardsService {
 
   async quickSellCard(quickSellCard: QuickSellProps): Promise<User> {
     await this.removeLineupPlayers(
-      [quickSellCard.playerId],
+      [quickSellCard.cardId],
       quickSellCard.ownerId,
     );
 
